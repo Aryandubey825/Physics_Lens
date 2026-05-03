@@ -1,3 +1,4 @@
+import SwiftUI
 
 struct GameResult {
     var topic: String

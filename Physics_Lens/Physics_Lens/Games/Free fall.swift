@@ -111,7 +111,7 @@ struct FreeFallGame: View {
                     }
                 }
             }
-            .frame(height: UIScreen.main.bounds.width * 0.6)
+            .aspectRatio(1 / 0.6, contentMode: .fit)
             
             VStack(spacing: 15) {
                 

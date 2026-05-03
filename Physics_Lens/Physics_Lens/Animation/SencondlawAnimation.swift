@@ -1,6 +1,5 @@
 import SwiftUI
-
-import SwiftUI
+import Combine
 
 struct NewtonSecondLawSimulator: View {
     

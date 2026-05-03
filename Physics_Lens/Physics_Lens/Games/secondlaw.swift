@@ -24,7 +24,7 @@ struct PhysicsRacePro: View {
     
     @State private var userAnswer: String = ""
     
-    @State private var carPosition: CGFloat = 0
+    @State private var carProgress: CGFloat = 0
     @State private var resultText = ""
     @State private var solutionText = ""
     
@@ -194,7 +194,7 @@ struct PhysicsRacePro: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 80, height: 40)
-                    .offset(x: carPosition, y: 60)
+                    .offset(x: carProgress * (geo.size.width - 120), y: 60)
                     .shadow(color: glow ? .green : .black.opacity(0.3), radius: 10)
             }
         }
@@ -289,7 +289,7 @@ struct PhysicsRacePro: View {
         acceleration = Double(Int.random(in: 5...15))
         distance = 0.5 * acceleration * time * time
         userAnswer = ""
-        carPosition = 0
+        carProgress = 0
         hint = ""
         answered = false
     }
@@ -342,8 +342,7 @@ struct PhysicsRacePro: View {
     }
     
     func moveCar(speed: CGFloat) {
-        let maxWidth = UIScreen.main.bounds.width - 120
-        carPosition = maxWidth * speed
+        carProgress = speed
     }
     
     func glowEffect() {

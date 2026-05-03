@@ -1,6 +1,7 @@
 import Foundation
 import FoundationModels
 import SwiftUI
+import Combine
 
 @available(iOS 26.0, *)
 @MainActor

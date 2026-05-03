@@ -1,0 +1,293 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild build -scheme Physics_Lens -destination generic/platform=iOS
+
+2026-05-03 22:34:25.704 xcodebuild[2315:37818] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'Physics_Lens' in project 'Physics_Lens' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 38746c8a0550e6ad0bc999529d1c8d59
+Build description path: /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/XCBuildData/38746c8a0550e6ad0bc999529d1c8d59.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk /Users/aryan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E237-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -o /Users/aryan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E237-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache
+
+CompileAssetCatalogVariant thinned /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Products/Debug-iphoneos/Physics_Lens.app /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Assets.xcassets (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Assets.xcassets --compile /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --accent-color AccentColor --compress-pngs --enable-on-demand-resources YES --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 26.4 --platform iphoneos
+
+SwiftDriver Physics_Lens normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Physics_Lens -Onone @/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -target arm64-apple-ios26.4 -g -module-cache-path /Users/aryan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Products/Debug-iphoneos -F /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Products/Debug-iphoneos -emit-localized-strings -emit-localized-strings-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/aryan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E237-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache -output-file-map /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/aryan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/aryan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/aryan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens_const_extract_protocols.json -Xcc -iquote -Xcc /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-generated-files.hmap -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-own-target-headers.hmap -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-all-target-headers.hmap -Xcc -iquote -Xcc /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-project-headers.hmap -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Products/Debug-iphoneos/include -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/DerivedSources-normal/arm64 -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/DerivedSources/arm64 -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens-Swift.h -working-directory /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/aryan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/BackgroundAssets-BWSYQN4ITZ7D2GZ7ZP3F04DW.pcm
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Physics_Lens (in target 'Physics_Lens' from project 'Physics_Lens')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/FreeFallVelocityTimeGraph.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/friction\ graph.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/PendulumGraphSection.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/ProjectileGraphView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/secondlawgraph.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/FreeFallAnimationView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/FrictionAnimationView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/PendulumAnimationView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/ProjectileMotionView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/SencondlawAnimation.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/CaseCard.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/ExploreCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/FormulaCard.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/FormulaCard1.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/GuideCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/TopicHeroCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/WhyStudyCard.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/AIFeedbackManager.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/GameResult.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/VoiceAssistantManager.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/Free\ fall.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/friction.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/pendulum.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/Projectile\ motion.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/secondlaw.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Helper/board.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Helper/SFEmojiViews.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/Guide.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/TodayTip.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/Topic.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /EarthMoonCompareView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /EqualFallView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /ExploreView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /MotionFormulaView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /TerminalVelocityView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/GamesTab/physicsView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/GamesTab/PreviousExperimentCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/FreeFallDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/frictionDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/PendulumDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/ProjectileDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/sencondlawDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/TopicDetailsView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/HomeView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/mainTabView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/TodayTipView\ .swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/boardingScreen.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/launchView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Physics_LensApp.swift /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/DerivedSources/GeneratedAssetSymbols.swift -target arm64-apple-ios26.4 -module-can-import-version DeveloperToolsSupport 23.40.26 23.40.26 -module-can-import-version SwiftUI 7.4.27.1 7.4.27 -module-can-import-version UIKit 9126.4.27.1 9126.4.27 -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationModelsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationModelsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -I /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Products/Debug-iphoneos -F /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Products/Debug-iphoneos -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens_const_extract_protocols.json -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -default-isolation\=MainActor -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/aryan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens -enable-anonymous-context-mangled-names -file-compilation-dir /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/aryan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E237-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-generated-files.hmap -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-own-target-headers.hmap -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-all-target-headers.hmap -Xcc -iquote -Xcc /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Physics_Lens-project-headers.hmap -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Products/Debug-iphoneos/include -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/DerivedSources-normal/arm64 -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/DerivedSources/arm64 -Xcc -I/Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name Physics_Lens -frontend-parseable-output -disable-clang-spi -clang-target arm64-apple-ios26.4 -target-sdk-version 26.4 -target-sdk-name iphoneos26.4 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -emit-module-doc-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens.swiftdoc -emit-module-source-info-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens.swiftsourceinfo -emit-objc-header-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens-Swift.h -serialize-diagnostics-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens-primary-emit-module.dia -emit-dependencies-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens-primary-emit-module.d -o /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens.swiftmodule -emit-abi-descriptor-path /Users/aryan/Library/Developer/Xcode/DerivedData/Physics_Lens-eenewnctlrgkbpedacfpqkpvbjmg/Build/Intermediates.noindex/Physics_Lens.build/Debug-iphoneos/Physics_Lens.build/Objects-normal/arm64/Physics_Lens.abi.json
+
+EmitSwiftModule normal arm64 (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/ProjectileMotionView.swift:16:68: error: instance method 'autoconnect()' is not available due to missing import of defining module 'Combine'
+    let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
+                                                                   ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/ProjectileMotionView.swift:2:1: note: add import of module 'Combine'
+
+^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/SencondlawAnimation.swift:16:68: error: instance method 'autoconnect()' is not available due to missing import of defining module 'Combine'
+    let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
+                                                                   ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/SencondlawAnimation.swift:4:1: note: add import of module 'Combine'
+
+^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/AIFeedbackManager.swift:7:7: error: type 'AIFeedbackManager' does not conform to protocol 'ObservableObject'
+class AIFeedbackManager: ObservableObject {
+      ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/AIFeedbackManager.swift:7:7: note: add stubs for conformance
+class AIFeedbackManager: ObservableObject {
+      ^
+Combine.ObservableObject.objectWillChange:2:5: note: protocol requires property 'objectWillChange' with type 'Self.ObjectWillChangePublisher'
+var objectWillChange: Self.ObjectWillChangePublisher { get }}
+    ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/AIFeedbackManager.swift:9:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var feedbackText: String = ""
+     ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/AIFeedbackManager.swift:4:1: note: add import of module 'Combine'
+
+^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/AIFeedbackManager.swift:10:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var isLoading: Bool = false
+     ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/AIFeedbackManager.swift:4:1: note: add import of module 'Combine'
+
+^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/VoiceAssistantManager.swift:5:7: error: type 'VoiceAssistantManager' does not conform to protocol 'ObservableObject'
+class VoiceAssistantManager: ObservableObject {
+      ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation Model/VoiceAssistantManager.swift:5:7: note: add stubs for conformance
+class VoiceAssistantManager: ObservableObject {
+      ^
+Combine.ObservableObject.objectWillChange:2:5: note: protocol requires property 'objectWillChange' with type 'Self.ObjectWillChangePublisher'
+var objectWillChange: Self.ObjectWillChangePublisher { get }}
+    ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/boardingScreen.swift:98:67: error: instance method 'autoconnect()' is not available due to missing import of defining module 'Combine'
+    let timer = Timer.publish(every: 2.5, on: .main, in: .common).autoconnect()
+                                                                  ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/boardingScreen.swift:2:1: note: add import of module 'Combine'
+
+^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/boardingScreen.swift:198:67: error: instance method 'autoconnect()' is not available due to missing import of defining module 'Combine'
+    let timer = Timer.publish(every: 2.5, on: .main, in: .common).autoconnect()
+                                                                  ^
+/Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/boardingScreen.swift:2:1: note: add import of module 'Combine'
+
+^
+
+SwiftCompile normal arm64 Compiling\ physicsView.swift,\ PreviousExperimentCardView.swift,\ FreeFallDetailContent.swift,\ frictionDetailContent.swift,\ PendulumDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/GamesTab/physicsView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/GamesTab/PreviousExperimentCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/FreeFallDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/frictionDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/PendulumDetailContent.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/GamesTab/physicsView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/GamesTab/PreviousExperimentCardView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/FreeFallDetailContent.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/frictionDetailContent.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/PendulumDetailContent.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ Free\ fall.swift,\ friction.swift,\ pendulum.swift,\ Projectile\ motion.swift,\ secondlaw.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/Free\ fall.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/friction.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/pendulum.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/Projectile\ motion.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/secondlaw.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/Free\ fall.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/friction.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/pendulum.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/Projectile\ motion.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Games/secondlaw.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ FreeFallAnimationView.swift,\ FrictionAnimationView.swift,\ PendulumAnimationView.swift,\ ProjectileMotionView.swift,\ SencondlawAnimation.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/FreeFallAnimationView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/FrictionAnimationView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/PendulumAnimationView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/ProjectileMotionView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/SencondlawAnimation.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/FreeFallAnimationView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/FrictionAnimationView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/PendulumAnimationView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/ProjectileMotionView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/SencondlawAnimation.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ FreeFallVelocityTimeGraph.swift,\ friction\ graph.swift,\ PendulumGraphSection.swift,\ ProjectileGraphView.swift,\ secondlawgraph.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/FreeFallVelocityTimeGraph.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/friction\ graph.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/PendulumGraphSection.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/ProjectileGraphView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/secondlawgraph.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/FreeFallVelocityTimeGraph.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/friction\ graph.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/PendulumGraphSection.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/ProjectileGraphView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Animation/Graphs/secondlawgraph.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ TopicHeroCardView.swift,\ WhyStudyCard.swift,\ AIFeedbackManager.swift,\ GameResult.swift,\ VoiceAssistantManager.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/TopicHeroCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/WhyStudyCard.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/AIFeedbackManager.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/GameResult.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/VoiceAssistantManager.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/TopicHeroCardView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/WhyStudyCard.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/AIFeedbackManager.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/GameResult.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/foundation\ Model/VoiceAssistantManager.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ CaseCard.swift,\ ExploreCardView.swift,\ FormulaCard.swift,\ FormulaCard1.swift,\ GuideCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/CaseCard.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/ExploreCardView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/FormulaCard.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/FormulaCard1.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/GuideCardView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/CaseCard.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/ExploreCardView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/FormulaCard.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/FormulaCard1.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Cards/GuideCardView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ board.swift,\ SFEmojiViews.swift,\ Guide.swift,\ TodayTip.swift,\ Topic.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Helper/board.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Helper/SFEmojiViews.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/Guide.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/TodayTip.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/Topic.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Helper/board.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Helper/SFEmojiViews.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/Guide.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/TodayTip.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/Models/Topic.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ EarthMoonCompareView.swift,\ EqualFallView.swift,\ ExploreView.swift,\ MotionFormulaView.swift,\ TerminalVelocityView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /EarthMoonCompareView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /EqualFallView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /ExploreView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /MotionFormulaView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /TerminalVelocityView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /EarthMoonCompareView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /EqualFallView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /ExploreView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /MotionFormulaView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Explore\ /TerminalVelocityView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+    cd /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens
+    
+
+SwiftCompile normal arm64 Compiling\ ProjectileDetailContent.swift,\ sencondlawDetailContent.swift,\ TopicDetailsView.swift,\ HomeView.swift,\ mainTabView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/ProjectileDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/sencondlawDetailContent.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/Topics/TopicDetailsView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/HomeView.swift /Users/aryan/Documents/GitHub/SSC/Physics_Lens/Physics_Lens/Physics_Lens/View/Home/mainTabView.swift (in target 'Physics_Lens' from project 'Physics_Lens')
+
+** BUILD FAILED **
+
+
+The following build commands failed:
+	SwiftEmitModule normal arm64 Emitting\ module\ for\ Physics_Lens (in target 'Physics_Lens' from project 'Physics_Lens')
+	EmitSwiftModule normal arm64 (in target 'Physics_Lens' from project 'Physics_Lens')
+	Building project Physics_Lens with scheme Physics_Lens
+(3 failures)

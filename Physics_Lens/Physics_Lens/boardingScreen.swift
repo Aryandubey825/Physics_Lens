@@ -1,5 +1,5 @@
 import SwiftUI
-
+import Combine
 @available(iOS 26.0, *)
 struct OnboardingView: View {
     
