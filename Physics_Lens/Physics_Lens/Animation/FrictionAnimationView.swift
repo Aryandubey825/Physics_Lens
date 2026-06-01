@@ -20,11 +20,9 @@ struct FrictionAnimationView: View {
                 let boxWidth: CGFloat = 70
                 let boxHeight: CGFloat = 60
                 
-                let boxCenterX = geo.size.width / 2 + position
                 let boxCenterY = groundY - boxHeight/2
-                
-                let boxLeftEdge = boxCenterX - boxWidth/2
-                let boxRightEdge = boxCenterX + boxWidth/2
+                let range = geo.size.width > 0 ? geo.size.width : 400
+                let k_center = Int(floor((position + geo.size.width / 2) / range))
                 
                 ZStack {
                     
@@ -38,31 +36,37 @@ struct FrictionAnimationView: View {
                     }
                     .stroke(.gray, lineWidth: 2)
                     
-                 
-                    Rectangle()
-                        .fill(.brown)
-                        .frame(width: boxWidth, height: boxHeight)
-                        .position(x: boxCenterX, y: boxCenterY)
-                        .animation(.easeOut(duration: 1), value: position)
                     
-                    
-                    ArrowShape()
-                        .fill(.green)
-                        .frame(width: CGFloat(force), height: 8)
-                        .position(
-                            x: boxLeftEdge - CGFloat(force)/2,
-                            y: boxCenterY
-                        )
-                    
-                    
-                    ArrowShape()
-                        .fill(.red)
-                        .frame(width: CGFloat(friction), height: 8)
-                        .rotationEffect(.degrees(180))
-                        .position(
-                            x: boxRightEdge + CGFloat(friction)/2,
-                            y: boxCenterY
-                        )
+                    ForEach(Array((k_center - 1)...(k_center + 1)), id: \.self) { k in
+                        let currentBoxCenterX = geo.size.width / 2 + position - CGFloat(k) * range
+                        let currentBoxLeftEdge = currentBoxCenterX - boxWidth/2
+                        let currentBoxRightEdge = currentBoxCenterX + boxWidth/2
+                        
+                        Rectangle()
+                            .fill(.brown)
+                            .frame(width: boxWidth, height: boxHeight)
+                            .position(x: currentBoxCenterX, y: boxCenterY)
+                            .animation(.easeOut(duration: 1), value: position)
+                        
+                        Text("🏃")
+                            .font(.system(size: 55))
+                            .scaleEffect(x: -1, y: 1)
+                            .position(
+                                x: currentBoxLeftEdge - 25,
+                                y: groundY - 27.5
+                            )
+                            .animation(.easeOut(duration: 1), value: position)
+                        
+                        ArrowShape()
+                            .fill(.red)
+                            .frame(width: CGFloat(friction), height: 8)
+                            .rotationEffect(.degrees(180))
+                            .position(
+                                x: currentBoxRightEdge + CGFloat(friction)/2,
+                                y: boxCenterY
+                            )
+                            .animation(.easeOut(duration: 1), value: position)
+                    }
                     
                    
                     VStack(alignment: .leading, spacing: 4) {

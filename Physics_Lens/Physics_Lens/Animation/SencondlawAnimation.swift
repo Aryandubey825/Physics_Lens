@@ -21,17 +21,13 @@ struct NewtonSecondLawSimulator: View {
     var body: some View {
         VStack(spacing: 20) {
             
-            Text("Newton’s Second Law")
-                .font(.title.bold())
-            
-           
             ZStack {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color.blue.opacity(0.08))
                 
-                Rectangle()
-                    .fill(Color.red)
-                    .frame(width: 60, height: 60)
+                Text("🐘")
+                    .font(.system(size: 35 + CGFloat(mass) * 5))
+                    .scaleEffect(x: -1, y: 1)
                     .offset(x: position)
             }
             .frame(height: 200)

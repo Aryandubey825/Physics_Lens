@@ -2,11 +2,9 @@ import SwiftUI
 
 struct HomeView: View {
     
-    let todayTip = TodayTip(
-        title: "Today’s Physics Tip",
-        description: "For maximum range in projectile motion, angle should be 45°.",
-        icon: "sparkles"
-    )
+    var todayTip: TodayTip {
+        TodayTip.getTipForToday()
+    }
     
     let topics: [Topic] = [
         Topic(

@@ -5,9 +5,6 @@ struct NewtonSecondLawVisual: View {
     var body: some View {
         VStack(spacing: 16) {
             
-            Text("Newton’s Second Law")
-                .font(.title.bold())
-            
             Canvas { context, size in
                 
                 let w = size.width

@@ -37,9 +37,8 @@ struct FreeFallAnimationView: View {
                             .fill(Color(.systemGray6))
                         
                        
-                        Circle()
-                            .fill(.orange)
-                            .frame(width: 18, height: 18)
+                        Text("🍉")
+                            .font(.system(size: 35))
                             .position(x: geo.size.width / 2, y: yPosition)
                         
                         

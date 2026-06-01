@@ -15,8 +15,25 @@ struct ProjectileMotionSimulator: View {
     
     let timer = Timer.publish(every: 0.02, on: .main, in: .common).autoconnect()
     
-    let scale: CGFloat = 6
+    @State private var containerWidth: CGFloat = 350
     let origin = CGPoint(x: 30, y: 260)
+    
+    var scale: CGFloat {
+        let u = velocity
+        let g = gravity
+        let theta = angle * .pi / 180
+        
+        let physicalMaxHeight = pow(u * sin(theta), 2) / (2 * g)
+        let physicalRange = pow(u, 2) * sin(2 * theta) / g
+        
+        let maxWidth = max(containerWidth - 60, 100)
+        let maxHeightPixels: CGFloat = 230
+        
+        let scaleX = physicalRange > 0 ? maxWidth / CGFloat(physicalRange) : 6
+        let scaleY = physicalMaxHeight > 0 ? maxHeightPixels / CGFloat(physicalMaxHeight) : 6
+        
+        return min(min(scaleX, scaleY), 15.0)
+    }
     
     var body: some View {
         VStack(spacing: 16) {
@@ -31,16 +48,22 @@ struct ProjectileMotionSimulator: View {
                
                 Path { path in
                     path.move(to: origin)
-                    for t in stride(from: 0.0, to: 5.0, by: 0.05) {
+                    let duration = (2 * velocity * sin(angle * .pi / 180)) / gravity
+                    for t in stride(from: 0.0, to: duration, by: 0.05) {
                         let x = xPosition(t)
                         let y = yPosition(t)
-                        if y >= 0 {
-                            path.addLine(to: CGPoint(
-                                x: origin.x + x * scale,
-                                y: origin.y - y * scale
-                            ))
-                        }
+                        path.addLine(to: CGPoint(
+                            x: origin.x + x * scale,
+                            y: origin.y - y * scale
+                        ))
                     }
+                    // Add the final landing point exactly
+                    let finalX = xPosition(duration)
+                    let finalY = yPosition(duration)
+                    path.addLine(to: CGPoint(
+                        x: origin.x + finalX * scale,
+                        y: origin.y - finalY * scale
+                    ))
                 }
                 .stroke(Color.gray, style: StrokeStyle(lineWidth: 2, dash: [6]))
                 
@@ -57,7 +80,10 @@ struct ProjectileMotionSimulator: View {
                     Circle()
                         .fill(Color.blue.opacity(0.4))
                         .frame(width: 4, height: 4)
-                        .position(trail[i])
+                        .position(
+                            x: origin.x + trail[i].x * scale,
+                            y: origin.y - trail[i].y * scale
+                        )
                 }
                 
                 Circle()
@@ -98,19 +124,28 @@ struct ProjectileMotionSimulator: View {
             }
         }
         .padding()
+        .background(
+            GeometryReader { geo in
+                Color.clear
+                    .onAppear {
+                        containerWidth = geo.size.width
+                    }
+                    .onChange(of: geo.size.width) { newValue in
+                        containerWidth = newValue
+                    }
+            }
+        )
         .onReceive(timer) { _ in
             guard isRunning else { return }
             
             time += 0.02 * speedFactor
             
-            let x = origin.x + xPosition(time) * scale
-            let y = origin.y - yPosition(time) * scale
+            let x = xPosition(time)
+            let y = yPosition(time)
             
-            if y <= origin.y {
+            if y >= 0 {
                 trail.append(CGPoint(x: x, y: y))
-            }
-            
-            if y > origin.y {
+            } else {
                 isRunning = false
             }
         }
@@ -132,9 +167,12 @@ struct ProjectileMotionSimulator: View {
     }
     
     var projectilePosition: CGPoint {
-        let x = origin.x + xPosition(time) * scale
-        let y = origin.y - yPosition(time) * scale
-        return CGPoint(x: x, y: y)
+        let x = xPosition(time)
+        let y = max(yPosition(time), 0)
+        return CGPoint(
+            x: origin.x + x * scale,
+            y: origin.y - y * scale
+        )
     }
     
     var timeOfFlight: String {

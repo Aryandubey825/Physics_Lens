@@ -23,7 +23,7 @@ struct PendulumAnimationView: View {
                     
                     let centerX = geo.size.width / 2
                     let topY: CGFloat = 20
-                    let bobLength = CGFloat(length * 120)
+                    let bobLength = CGFloat(length * 80)
                     
                     let bobX = centerX + sin(angle) * bobLength
                     let bobY = topY + cos(angle) * bobLength
@@ -40,9 +40,10 @@ struct PendulumAnimationView: View {
                         .stroke(.gray, lineWidth: 2)
                         
                       
-                        Circle()
-                            .fill(.blue)
-                            .frame(width: 20, height: 20)
+                        Image("ball1")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
                             .position(x: bobX, y: bobY)
                         
                        
