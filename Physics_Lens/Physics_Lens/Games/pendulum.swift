@@ -106,9 +106,6 @@ struct PendulumGame: View {
                     
                     Spacer()
                 }
-                
-                popupOverlay
-                hintOverlay
             }
             .frame(height: 450)
             
@@ -155,7 +152,7 @@ struct PendulumGame: View {
                 Button {
                     showHint = true
                 } label: {
-                    Text("Hint")
+                    Text("💡 Show Hint")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
                 }
@@ -164,6 +161,12 @@ struct PendulumGame: View {
             .padding()
             .background(Color(.systemGray6))
         }
+        .overlay(
+            ZStack {
+                popupOverlay
+                hintOverlay
+            }
+        )
         .onAppear {
             startPendulum()
         }
@@ -176,26 +179,90 @@ struct PendulumGame: View {
     var hintOverlay: some View {
         Group {
             if showHint {
-                VStack(alignment: .leading, spacing: 10) {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showHint = false
+                    }
+                
+                let lengthMeters = lengthPixels / pixelToMeter
+                let correctT = realTimePeriod()
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "lightbulb.fill")
+                            .foregroundColor(.yellow)
+                            .font(.title2)
+                        Text("Solver Hint")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Button {
+                            showHint = false
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                                .font(.title3)
+                        }
+                        .buttonStyle(.plain)
+                    }
                     
-                    Text("📘 Pendulum Formula")
-                        .font(.headline)
+                    Divider()
                     
-                    Text("Time Period:")
-                    Text("T = 2π√(L/g)")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("🎯 Solve Guide:")
+                            .font(.subheadline.bold())
+                            .foregroundColor(.blue)
+                        
+                        Text("Time Period (T) equation:")
+                            .font(.footnote)
+                        Text("T = 2π × √(L / g)")
+                            .font(.system(.body, design: .monospaced))
+                            .bold()
+                            .padding(6)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(6)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Current Values:")
+                                .font(.caption.bold())
+                            Text("• Length (L) = \(String(format: "%.2f", lengthMeters)) m")
+                            Text("• Gravity (g) = \(gravity) m/s²")
+                        }
+                        .font(.footnote)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Step-by-Step for Current Values:")
+                                .font(.caption.bold())
+                            Text("T = 2 × 3.1416 × √(\(String(format: "%.2f", lengthMeters)) / \(gravity))\nT ≈ \(String(format: "%.2f", correctT)) seconds")
+                                .font(.system(.footnote, design: .monospaced))
+                                .foregroundColor(.secondary)
+                                .padding(6)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.gray.opacity(0.1))
+                                .cornerRadius(6)
+                        }
+                    }
                     
-                    Text("• Depends only on Length and Gravity")
-                    Text("• Independent of Mass")
+                    Divider()
                     
-                    Button("Close") {
+                    Button("Got it!") {
                         showHint = false
                     }
                     .buttonStyle(.borderedProminent)
-                    .padding(.top)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding()
-                .background(.ultraThinMaterial)
-                .cornerRadius(18)
+                .padding(20)
+                .frame(maxWidth: 340)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(.ultraThinMaterial)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                )
+                .shadow(radius: 10)
                 .padding()
             }
         }

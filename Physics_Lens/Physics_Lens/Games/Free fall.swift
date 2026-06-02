@@ -15,6 +15,7 @@ struct FreeFallGame: View {
     @State private var ballY: CGFloat = 0
     @State private var fallDuration: Double = 1.5
     @State private var showSplash = false
+    @State private var showHint = false
     
     @StateObject private var aiManager = AIFeedbackManager()
     @State private var showAISheet = false
@@ -137,16 +138,23 @@ struct FreeFallGame: View {
                 }
                 .disabled(showPopup)
                 
-                Button("Next Round") {
-                    generateRound()
+                Button(action: {
+                    showHint.toggle()
+                }) {
+                    Text("💡 Show Hint")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
             }
             .padding()
         }
         .onAppear { generateRound() }
-        .overlay(popupOverlay)
+        .overlay(
+            ZStack {
+                popupOverlay
+                hintOverlay
+            }
+        )
     }
     
     
@@ -296,5 +304,121 @@ struct FreeFallGame: View {
             velocity: givenVariables.contains("v") ? v : nil,
             findVariable: findVariable
         )
+    }
+    
+    func getHintText() -> (title: String, formula: String, explanation: String, example: String) {
+        switch questionType {
+        case .time:
+            return (
+                title: "Finding Time of Fall (t)",
+                formula: "t = √((2 × s) / g)",
+                explanation: "When you know the height (s) from which the object is dropped, you can find the time it takes to reach the ground by rearranging s = ½gt².",
+                example: "For Height s = \(Int(s)) m and g = 9.8 m/s²:\nt = √((2 × \(Int(s))) / 9.8) ≈ \(String(format: "%.2f", sqrt(2 * s / 9.8))) seconds."
+            )
+        case .velocity:
+            return (
+                title: "Finding Final Velocity (v)",
+                formula: "v = g × t",
+                explanation: "When you know the time of flight (t), the final velocity is simply the acceleration due to gravity (g) multiplied by time.",
+                example: "For Time t = \(String(format: "%.1f", t)) s and g = 9.8 m/s²:\nv = 9.8 × \(String(format: "%.1f", t)) ≈ \(String(format: "%.2f", 9.8 * t)) m/s."
+            )
+        case .velocitySquare:
+            return (
+                title: "Finding Velocity from Height (v)",
+                formula: "v = √(2 × g × s)",
+                explanation: "When you know the height (s) but not the time, use the third equation of motion: v² = u² + 2gs (since initial velocity u = 0, v = √2gs).",
+                example: "For Height s = \(Int(s)) m and g = 9.8 m/s²:\nv = √(2 × 9.8 × \(Int(s))) ≈ \(String(format: "%.2f", sqrt(2 * 9.8 * s))) m/s."
+            )
+        }
+    }
+    
+    var hintOverlay: some View {
+        Group {
+            if showHint {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showHint = false
+                    }
+                
+                let hint = getHintText()
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "lightbulb.fill")
+                            .foregroundColor(.yellow)
+                            .font(.title2)
+                        Text("Solver Hint")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Button {
+                            showHint = false
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                                .font(.title3)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    
+                    Divider()
+                    
+                    Text(hint.title)
+                        .font(.subheadline.bold())
+                        .foregroundColor(.blue)
+                    
+                    Text(hint.explanation)
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Formula to Use:")
+                            .font(.caption.bold())
+                            .foregroundColor(.primary)
+                        Text(hint.formula)
+                            .font(.system(.body, design: .monospaced))
+                            .bold()
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(6)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Step-by-Step for Current Values:")
+                            .font(.caption.bold())
+                            .foregroundColor(.primary)
+                        Text(hint.example)
+                            .font(.system(.footnote, design: .monospaced))
+                            .foregroundColor(.secondary)
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(6)
+                    }
+                    
+                    Divider()
+                    
+                    Button("Got it!") {
+                        showHint = false
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity)
+                }
+                .padding(20)
+                .frame(maxWidth: 340)
+                .background(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(.ultraThinMaterial)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                )
+                .shadow(radius: 10)
+                .padding()
+            }
+        }
     }
 }
