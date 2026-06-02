@@ -39,190 +39,208 @@ struct projectileGame: View {
     let visualScale: Double = 3
     
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack {
+            // Unified Immersive Background
+            LinearGradient(
+                colors: [Color(red: 0.90, green: 0.93, blue: 0.97), Color(red: 0.96, green: 0.97, blue: 0.98)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
-            Text("Projectile Motion")
-                .font(.system(size: 32, weight: .bold))
-            
-            ZStack {
-                
-                LinearGradient(
-                    colors: [.black, .blue.opacity(0.8)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+            PhysicsDoodleWallpaper()
+                .opacity(0.06)
                 .ignoresSafeArea()
-                
-               
-                ForEach(0..<60, id: \.self) { _ in
-                    Circle()
-                        .fill(Color.white.opacity(Double.random(in: 0.4...0.9)))
-                        .frame(width: CGFloat.random(in: 2...3))
-                        .position(
-                            x: CGFloat.random(in: 0...800),
-                            y: CGFloat.random(in: 0...250)
-                        )
-                }
-                
-                let targetScreenX = 50 + targetDistance * visualScale
-                
-                if !isLaunched {
-                    Path { path in
-                        let points = predictedPoints()
-                        guard points.count > 1 else { return }
-                        path.move(to: points[0])
-                        for p in points { path.addLine(to: p) }
-                    }
-                    .stroke(Color.white.opacity(0.5),
-                            style: StrokeStyle(lineWidth: 2, dash: [6,6]))
-                }
-                
-                Path { path in
-                    guard trajectoryPoints.count > 1 else { return }
-                    path.move(to: trajectoryPoints[0])
-                    for p in trajectoryPoints { path.addLine(to: p) }
-                }
-                .stroke(Color.white, lineWidth: 2)
-                
-                Image("target")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .position(x: targetScreenX, y: 335)
-                
-                Image("moon")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .shadow(color: .white.opacity(0.6), radius: 20)
-                    .position(x: 400, y: 100)
-                
-                Image("tree")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 120, height: 180)
-                    .position(x: 550, y: 315)
-                
-                Image("ball")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 30, height: 30)
-                    .rotationEffect(.degrees(rotation))
-                    .position(x: 50 + xPosition,
-                              y: 350 - yPosition)
-                
-                
-                
-                VStack {
-                    HStack {
-                        Text("Score: \(score)")
-                            .foregroundColor(.white)
-                            .padding(.leading)
-                        
-                        Spacer()
-                        
-                        Button {
-                            showBoard = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "pencil.and.outline")
-                                Text("Rough Work")
-                            }
-                        }
-                        .buttonStyle(.bordered)
-                        .sheet(isPresented: $showBoard) {
-                            RoughBoardView()
-                        }
-                        
-                        
-                        
-                        Button {
-                            voiceManager.speakProjectileQuestion(
-                                angle: angle,
-                                range: targetDistance,
-                                gravity: selectedGravity,
-                                lockAngle: lockAngle,
-                                lockSpeed: lockSpeed
-                            )
-                        } label: {
-                            Image(systemName: "speaker.wave.2.fill")
-                                .font(.title3)
-                                .padding(10)
-                                .background(.ultraThinMaterial)
-                                .clipShape(Circle())
-                        }
-                        .padding(.trailing)
-                    }
-                    .padding(.top, 20)
-                    
-                    Spacer()
-                }
-                VStack {
-                    Spacer()
-                    Rectangle()
-                        .fill(Color.green)
-                        .frame(height: 80)
-                }
-            }
-            .frame(height: 450)
             
-            VStack(spacing: 15) {
+            VStack(spacing: 0) {
+                Text("Projectile Motion")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(.primary)
+                    .padding(.top, 15)
+                    .padding(.bottom, 10)
                 
-                Text("Target Range: \(String(format: "%.1f", targetDistance)) m")
-                
-                VStack {
-                    if lockAngle {
-                        Text("Angle Locked 🔒 at \(Int(angle))°")
-                            .foregroundColor(.red)
-                            .bold()
-                    } else {
-                        Text("Angle: \(Int(angle))°")
+                GeometryReader { geometry in
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 18) {
+                            ZStack {
+                                LinearGradient(
+                                    colors: [.black, .blue.opacity(0.8)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                                .ignoresSafeArea()
+                                
+                                ForEach(0..<60, id: \.self) { _ in
+                                    Circle()
+                                        .fill(Color.white.opacity(Double.random(in: 0.4...0.9)))
+                                        .frame(width: CGFloat.random(in: 2...3))
+                                        .position(
+                                            x: CGFloat.random(in: 0...800),
+                                            y: CGFloat.random(in: 0...250)
+                                        )
+                                }
+                                
+                                let targetScreenX = 50 + targetDistance * visualScale
+                                
+                                if !isLaunched {
+                                    Path { path in
+                                        let points = predictedPoints()
+                                        guard points.count > 1 else { return }
+                                        path.move(to: points[0])
+                                        for p in points { path.addLine(to: p) }
+                                    }
+                                    .stroke(Color.white.opacity(0.5),
+                                            style: StrokeStyle(lineWidth: 2, dash: [6,6]))
+                                }
+                                
+                                Path { path in
+                                    guard trajectoryPoints.count > 1 else { return }
+                                    path.move(to: trajectoryPoints[0])
+                                    for p in trajectoryPoints { path.addLine(to: p) }
+                                }
+                                .stroke(Color.white, lineWidth: 2)
+                                
+                                Image("target")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .position(x: targetScreenX, y: 335)
+                                
+                                Image("moon")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                                    .shadow(color: .white.opacity(0.6), radius: 20)
+                                    .position(x: 400, y: 100)
+                                
+                                Image("tree")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 120, height: 180)
+                                    .position(x: 550, y: 315)
+                                
+                                Image("ball")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .rotationEffect(.degrees(rotation))
+                                    .position(x: 50 + xPosition,
+                                              y: 350 - yPosition)
+                                
+                                VStack {
+                                    HStack {
+                                        Text("Score: \(score)")
+                                            .foregroundColor(.primary)
+                                            .padding(.leading)
+                                        
+                                        Spacer()
+                                        
+                                        Button {
+                                            voiceManager.speakProjectileQuestion(
+                                                angle: angle,
+                                                range: targetDistance,
+                                                gravity: selectedGravity,
+                                                lockAngle: lockAngle,
+                                                lockSpeed: lockSpeed
+                                            )
+                                        } label: {
+                                            Image(systemName: "speaker.wave.2.fill")
+                                                .font(.title3)
+                                                .padding(10)
+                                                .background(.ultraThinMaterial)
+                                                .clipShape(Circle())
+                                        }
+                                        .padding(.trailing)
+                                    }
+                                    .padding(.top, 20)
+                                    
+                                    Spacer()
+                                }
+                                
+                                VStack {
+                                    Spacer()
+                                    Rectangle()
+                                        .fill(Color.green)
+                                        .frame(height: 80)
+                                }
+                            }
+                            .frame(height: 450)
+                            .cornerRadius(20)
+                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                            .padding(.horizontal)
+                            
+                            VStack(spacing: 15) {
+                                Text("Target Range: \(String(format: "%.1f", targetDistance)) m")
+                                
+                                VStack {
+                                    if lockAngle {
+                                        Text("Angle Locked 🔒 at \(Int(angle))°")
+                                            .foregroundColor(.red)
+                                            .bold()
+                                    } else {
+                                        Text("Angle: \(Int(angle))°")
+                                    }
+                                    
+                                    Slider(value: $angle, in: 0...90)
+                                        .disabled(lockAngle)
+                                }
+                                
+                                VStack {
+                                    if lockSpeed {
+                                        Text("Speed Locked 🔒 at \(Int(speed)) m/s")
+                                            .foregroundColor(.red)
+                                            .bold()
+                                    } else {
+                                        Text("Speed: \(Int(speed)) m/s")
+                                    }
+                                    
+                                    Slider(value: $speed, in: 0...100)
+                                        .disabled(lockSpeed)
+                                }
+                                
+                                Picker("Gravity", selection: $selectedGravity) {
+                                    Text("Earth").tag(9.8)
+                                    Text("Moon").tag(1.6)
+                                    Text("Mars").tag(3.7)
+                                }
+                                .pickerStyle(.segmented)
+                                
+                                Button(action: { launch() }) {
+                                    Text("Launch")
+                                        .bold()
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                }
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
+                                
+                                Button(action: {
+                                    showHint.toggle()
+                                }) {
+                                    Text("💡 Hint & Gravity Info")
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                }
+                            }
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(20)
+                            .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                            .padding(.horizontal)
+                            
+                            RoughBoardButtonCard {
+                                showBoard = true
+                            }
+                            .padding(.horizontal)
+                        }
+                        .frame(minHeight: geometry.size.height)
                     }
-                    
-                    Slider(value: $angle, in: 0...90)
-                        .disabled(lockAngle)
-                }
-                
-                VStack {
-                    if lockSpeed {
-                        Text("Speed Locked 🔒 at \(Int(speed)) m/s")
-                            .foregroundColor(.red)
-                            .bold()
-                    } else {
-                        Text("Speed: \(Int(speed)) m/s")
-                    }
-                    
-                    Slider(value: $speed, in: 0...100)
-                        .disabled(lockSpeed)
-                }
-                
-                Picker("Gravity", selection: $selectedGravity) {
-                    Text("Earth").tag(9.8)
-                    Text("Moon").tag(1.6)
-                    Text("Mars").tag(3.7)
-                }
-                .pickerStyle(.segmented)
-                
-                Button(action: { launch() }) {
-                    Text("Launch")
-                        .bold()
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                }
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-                
-                Button(action: {
-                    showHint.toggle()
-                }) {
-                    Text("💡 Hint & Gravity Info")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
                 }
             }
-            .padding()
-            .background(Color(.systemGray6))
+        }
+        .sheet(isPresented: $showBoard) {
+            RoughBoardView()
         }
         .overlay(
             ZStack {

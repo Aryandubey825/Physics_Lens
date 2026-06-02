@@ -41,112 +41,139 @@ struct FreeFallGame: View {
     @State private var totalDrop: CGFloat = 0
     
     var body: some View {
-        
-        VStack(spacing: 0) {
+        ZStack {
+            // Unified Immersive Background
+            LinearGradient(
+                colors: [Color(red: 0.90, green: 0.93, blue: 0.97), Color(red: 0.96, green: 0.97, blue: 0.98)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
-            HStack {
+            PhysicsDoodleWallpaper()
+                .opacity(0.06)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
                 Text("Free Fall")
                     .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(.primary)
+                    .padding(.top, 15)
+                    .padding(.bottom, 10)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 
-                Spacer()
-                
-                Button {
-                    showBoard = true
-                } label: {
-                    HStack {
-                        Image(systemName: "pencil.and.outline")
-                        Text("Rough Work")
-                    }
-                }
-                .buttonStyle(.bordered)
-                .sheet(isPresented: $showBoard) {
-                    RoughBoardView()
-                }
-                
-                Button {
-                    speakFreeFall()
-                } label: {
-                    Image(systemName: "speaker.wave.2.fill")
-                        .font(.title3)
-                        .padding(10)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Circle())
-                }
-            }
-            .padding()
-            
-            GeometryReader { geo in
-                ZStack(alignment: .top) {
-                    
-                    Image("pisa_bg")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: geo.size.width)
-                    
-                    let imageHeight = geo.size.width * 0.6
-                    let startY = imageHeight * 0.15
-                    let groundY = imageHeight * 0.80
-                    
-                    ZStack {
-                        Image("ball")
-                            .resizable()
-                            .frame(width: ballSize, height: ballSize)
-                            .position(
-                                x: geo.size.width / 2,
-                                y: startY + ballY
-                            )
-                            .animation(.easeIn(duration: fallDuration), value: ballY)
-                        
-                        if showSplash {
-                            Image("splash")
-                                .resizable()
-                                .frame(width: 80, height: 80)
-                                .position(
-                                    x: geo.size.width / 2,
-                                    y: groundY
-                                )
+                GeometryReader { geometry in
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 18) {
+                            GeometryReader { geo in
+                                ZStack(alignment: .top) {
+                                    Image("pisa_bg")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: geo.size.width)
+                                    
+                                    let imageHeight = geo.size.width * 0.6
+                                    let startY = imageHeight * 0.15
+                                    let groundY = imageHeight * 0.80
+                                    
+                                    ZStack {
+                                        Image("ball")
+                                            .resizable()
+                                            .frame(width: ballSize, height: ballSize)
+                                            .position(
+                                                x: geo.size.width / 2,
+                                                y: startY + ballY
+                                            )
+                                            .animation(.easeIn(duration: fallDuration), value: ballY)
+                                        
+                                        if showSplash {
+                                            Image("splash")
+                                                .resizable()
+                                                .frame(width: 80, height: 80)
+                                                .position(
+                                                    x: geo.size.width / 2,
+                                                    y: groundY
+                                                )
+                                        }
+                                    }
+                                    .onAppear {
+                                        totalDrop = groundY - startY
+                                    }
+                                    
+                                    // Speak & Rough Board buttons overlayed on top right
+                                    HStack(spacing: 10) {
+                                        Spacer()
+                                        
+                                        Button {
+                                            speakFreeFall()
+                                        } label: {
+                                            Image(systemName: "speaker.wave.2.fill")
+                                                .font(.title3)
+                                                .padding(10)
+                                                .background(.ultraThinMaterial)
+                                                .clipShape(Circle())
+                                        }
+                                    }
+                                    .padding(.top, 12)
+                                    .padding(.trailing, 12)
+                                }
+                            }
+                            .aspectRatio(1 / 0.6, contentMode: .fit)
+                            .cornerRadius(20)
+                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                            .padding(.horizontal)
+                            
+                            VStack(spacing: 15) {
+                                Text("Score: \(score)")
+                                    .font(.headline)
+                                
+                                Text(getQuestionText())
+                                    .multilineTextAlignment(.center)
+                                
+                                TextField("Enter Answer", text: $userAnswer)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                
+                                Button {
+                                    startDrop()
+                                } label: {
+                                    Text("Drop Ball")
+                                        .bold()
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.blue)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(12)
+                                        .contentShape(Rectangle())
+                                }
+                                .disabled(showPopup)
+                                
+                                Button(action: {
+                                    showHint.toggle()
+                                }) {
+                                    Text("💡 Show Hint")
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                }
+                            }
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(20)
+                            .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                            .padding(.horizontal)
+                            
+                            RoughBoardButtonCard {
+                                showBoard = true
+                            }
+                            .padding(.horizontal)
                         }
-                    }
-                    .onAppear {
-                        totalDrop = groundY - startY
+                        .frame(minHeight: geometry.size.height)
                     }
                 }
             }
-            .aspectRatio(1 / 0.6, contentMode: .fit)
-            
-            VStack(spacing: 15) {
-                
-                Text("Score: \(score)")
-                
-                Text(getQuestionText())
-                    .multilineTextAlignment(.center)
-                
-                TextField("Enter Answer", text: $userAnswer)
-                    .keyboardType(.decimalPad)
-                    .textFieldStyle(.roundedBorder)
-                
-                Button {
-                    startDrop()
-                } label: {
-                    Text("Drop Ball")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
-                        .contentShape(Rectangle())
-                }
-                .disabled(showPopup)
-                
-                Button(action: {
-                    showHint.toggle()
-                }) {
-                    Text("💡 Show Hint")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                }
-            }
-            .padding()
+        }
+        .sheet(isPresented: $showBoard) {
+            RoughBoardView()
         }
         .onAppear { generateRound() }
         .overlay(

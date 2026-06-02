@@ -29,137 +29,153 @@ struct PendulumGame: View {
     let pixelToMeter: Double = 150
     
     var body: some View {
-        
-        VStack(spacing: 0) {
+        ZStack {
+            // Unified Immersive Background
+            LinearGradient(
+                colors: [Color(red: 0.90, green: 0.93, blue: 0.97), Color(red: 0.96, green: 0.97, blue: 0.98)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
-            Text("Simple Pendulum")
-                .font(.system(size: 32, weight: .bold))
-            
-            ZStack {
-                
-                LinearGradient(
-                    colors: [.black, .blue.opacity(0.9)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+            PhysicsDoodleWallpaper()
+                .opacity(0.06)
                 .ignoresSafeArea()
-                
-                ZStack(alignment: .top) {
-                    
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 14)
-                    
-                    ZStack(alignment: .top) {
-                        
-                        Rectangle()
-                            .fill(Color.white)
-                            .frame(width: 3,
-                                   height: lengthPixels)
-                        
-                        Image("ball1")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 50)
-                            .offset(y: lengthPixels)
-                    }
-                    .rotationEffect(.radians(angle),
-                                    anchor: .top)
-                }
-                .padding(.top, 40)
-                
-                VStack {
-                    HStack {
-                        
-                        Text("Score: \(score)")
-                            .foregroundColor(.white)
-                            .padding(.leading)
-                        
-                        Spacer()
-                        
-                        Button {
-                            let lengthMeters = lengthPixels / pixelToMeter
-                            voiceManager.speakPendulumQuestion(
-                                lengthMeters: lengthMeters,
-                                gravity: gravity
-                            )
-                        } label: {
-                            Image(systemName: "speaker.wave.2.fill")
-                                .foregroundColor(.white)
-                        }
-                        
-                        Button {
-                            showBoard = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "pencil.and.outline")
-                                Text("Rough Work")
-                            }
-                        }
-                        .buttonStyle(.bordered)
-                        .sheet(isPresented: $showBoard) {
-                            RoughBoardView()
-                        }
-                        
-                        Spacer().frame(width: 12)
-                    }
-                    
-                    Spacer()
-                }
-            }
-            .frame(height: 450)
             
-            VStack(spacing: 15) {
+            VStack(spacing: 0) {
+                Text("Simple Pendulum")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(.primary)
+                    .padding(.top, 15)
+                    .padding(.bottom, 10)
                 
-                Toggle("Random Length Mode",
-                       isOn: $randomMode)
-                
-                let lengthMeters = lengthPixels / pixelToMeter
-                Text("Length: \(String(format: "%.2f", lengthMeters)) m")
-                
-                if !randomMode {
-                    Slider(value: $lengthPixels,
-                           in: 150...280)
+                GeometryReader { geometry in
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 18) {
+                            ZStack {
+                                LinearGradient(
+                                    colors: [.black, .blue.opacity(0.9)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                                .ignoresSafeArea()
+                                
+                                ZStack(alignment: .top) {
+                                    Circle()
+                                        .fill(Color.white)
+                                        .frame(width: 14)
+                                    
+                                    ZStack(alignment: .top) {
+                                        Rectangle()
+                                            .fill(Color.white)
+                                            .frame(width: 3, height: lengthPixels)
+                                        
+                                        Image("ball1")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 50)
+                                            .offset(y: lengthPixels)
+                                    }
+                                    .rotationEffect(.radians(angle), anchor: .top)
+                                }
+                                .padding(.top, 40)
+                                
+                                VStack {
+                                    HStack {
+                                        Text("Score: \(score)")
+                                            .foregroundColor(.primary)
+                                            .padding(.leading)
+                                        
+                                        Spacer()
+                                        
+                                        Button {
+                                            let lengthMeters = lengthPixels / pixelToMeter
+                                            voiceManager.speakPendulumQuestion(
+                                                lengthMeters: lengthMeters,
+                                                gravity: gravity
+                                            )
+                                        } label: {
+                                            Image(systemName: "speaker.wave.2.fill")
+                                                .foregroundColor(.white)
+                                                .font(.title3)
+                                                .padding(10)
+                                                .background(.ultraThinMaterial)
+                                                .clipShape(Circle())
+                                        }
+                                        
+                                        Spacer().frame(width: 12)
+                                    }
+                                    .padding(.top, 20)
+                                    
+                                    Spacer()
+                                }
+                            }
+                            .frame(height: 450)
+                            .cornerRadius(20)
+                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                            .padding(.horizontal)
+                            
+                            VStack(spacing: 15) {
+                                Toggle("Random Length Mode", isOn: $randomMode)
+                                
+                                let lengthMeters = lengthPixels / pixelToMeter
+                                Text("Length: \(String(format: "%.2f", lengthMeters)) m")
+                                
+                                if !randomMode {
+                                    Slider(value: $lengthPixels, in: 150...280)
+                                }
+                                
+                                Picker("Gravity", selection: $gravity) {
+                                    Text("Earth").tag(9.8)
+                                    Text("Moon").tag(1.6)
+                                    Text("Mars").tag(3.7)
+                                }
+                                .pickerStyle(.segmented)
+                                
+                                TextField("Time Period (seconds)", text: $userGuess)
+                                    .keyboardType(.decimalPad)
+                                    .padding()
+                                    .background(Color(.systemGray6))
+                                    .cornerRadius(10)
+                                
+                                Button {
+                                    checkAnswer()
+                                } label: {
+                                    Text("Submit")
+                                        .bold()
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                }
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
+                                
+                                Button {
+                                    showHint = true
+                                } label: {
+                                    Text("💡 Show Hint")
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                }
+                            }
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(20)
+                            .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                            .padding(.horizontal)
+                            
+                            RoughBoardButtonCard {
+                                showBoard = true
+                            }
+                            .padding(.horizontal)
+                        }
+                        .frame(minHeight: geometry.size.height)
+                    }
                 }
-                
-                Picker("Gravity",
-                       selection: $gravity) {
-                    Text("Earth").tag(9.8)
-                    Text("Moon").tag(1.6)
-                    Text("Mars").tag(3.7)
-                }
-                .pickerStyle(.segmented)
-                
-                TextField("Time Period (seconds)",
-                          text: $userGuess)
-                    .keyboardType(.decimalPad)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                
-                Button {
-                    checkAnswer()
-                } label: {
-                    Text("Submit")
-                        .bold()
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                }
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-                
-                Button {
-                    showHint = true
-                } label: {
-                    Text("💡 Show Hint")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                }
-                
             }
-            .padding()
-            .background(Color(.systemGray6))
+        }
+        .sheet(isPresented: $showBoard) {
+            RoughBoardView()
         }
         .overlay(
             ZStack {

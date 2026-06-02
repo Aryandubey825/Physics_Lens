@@ -4,6 +4,7 @@ struct EqualFallView: View {
     
     @State private var drop = false
     @State private var showVacuum = true
+    @State private var isAnimating = false
     
     var body: some View {
         ScrollView {
@@ -46,7 +47,7 @@ struct EqualFallView: View {
                                 .frame(width: 40, height: 40)
                                 .offset(y: drop ? 100 : -100)
                                 .animation(
-                                    .easeIn(duration: showVacuum ? 1.5 : 1),
+                                    isAnimating ? .easeIn(duration: showVacuum ? 1.5 : 1) : nil,
                                     value: drop
                                 )
                         }
@@ -60,7 +61,7 @@ struct EqualFallView: View {
                                 .frame(width: 25, height: 25)
                                 .offset(y: drop ? (showVacuum ? 100 : 60) : -100)
                                 .animation(
-                                    .easeIn(duration: showVacuum ? 1.5 : 2.5),
+                                    isAnimating ? .easeIn(duration: showVacuum ? 1.5 : 2.5) : nil,
                                     value: drop
                                 )
                         }
@@ -69,9 +70,11 @@ struct EqualFallView: View {
                 
                 
                 Button(action: {
+                    isAnimating = false
                     drop = false
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        isAnimating = true
                         drop = true
                     }
                     

@@ -35,44 +35,78 @@ struct PhysicsRacePro: View {
     @State private var answered = false
     @State private var hint = ""
     @State private var glow = false
+    @State private var showHint = false
     
     var body: some View {
-        
-        VStack(spacing: 0) {
+        ZStack {
+            // Unified Immersive Background
+            LinearGradient(
+                colors: [Color(red: 0.90, green: 0.93, blue: 0.97), Color(red: 0.96, green: 0.97, blue: 0.98)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
-            Text("Physics Race PRO 🚗💨")
-                .font(.system(size: 30, weight: .bold))
-                .padding(.top)
-            
-            ZStack {
-                
-                LinearGradient(
-                    colors: [.black.opacity(0.50), .green.opacity(0.50)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+            PhysicsDoodleWallpaper()
+                .opacity(0.06)
                 .ignoresSafeArea()
-                
-                VStack(spacing: 15) {
-                    topBar
-                    questionCard
-                    gameTrack
-                }
-                .padding(.top)
-            }
-            .frame(height: 480)
             
-            inputSection
+            VStack(spacing: 0) {
+                Text("Physics Race PRO 🚗💨")
+                    .font(.system(size: 30, weight: .bold))
+                    .foregroundColor(.primary)
+                    .padding(.top, 15)
+                    .padding(.bottom, 10)
+                
+                GeometryReader { geometry in
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 18) {
+                            ZStack {
+                                // Premium Cyber Indigo Card Background
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color(red: 0.08, green: 0.09, blue: 0.15))
+                                
+                                VStack(spacing: 16) {
+                                    topBar
+                                    questionCard
+                                    gameTrack
+                                }
+                                .padding(.top, 12)
+                                .padding(.bottom, 16)
+                            }
+                            .frame(height: 480)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.white.opacity(0.12), lineWidth: 1.5)
+                            )
+                            .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 5)
+                            .padding(.horizontal)
+                            
+                            inputSection
+                                .padding(.horizontal)
+                            
+                            RoughBoardButtonCard {
+                                showBoard = true
+                            }
+                            .padding(.horizontal)
+                        }
+                        .frame(minHeight: geometry.size.height)
+                    }
+                }
+            }
         }
-        .overlay(popupOverlay)
+        .overlay(
+            ZStack {
+                popupOverlay
+                hintOverlay
+            }
+        )
         .sheet(isPresented: $showBoard) {
             RoughBoardView()
         }
         .sheet(isPresented: $showAISheet) {
-            
             NavigationStack {
                 VStack(spacing: 20) {
-                    
                     Text("AI Performance Review")
                         .font(.title2.bold())
                     
@@ -104,34 +138,61 @@ struct PhysicsRacePro: View {
     // MARK: Top Bar
     var topBar: some View {
         HStack {
-            
-            VStack(alignment: .leading) {
-                Text("Score: \(score)")
-                Text("Streak: \(streak) 🔥")
+            // Score & Streak Badges
+            HStack(spacing: 10) {
+                HStack(spacing: 4) {
+                    Image(systemName: "flag.fill")
+                        .foregroundColor(.blue)
+                        .font(.caption)
+                    Text("SCORE: \(score)")
+                        .font(.system(.caption, design: .monospaced).bold())
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Color.blue.opacity(0.2))
+                .cornerRadius(8)
+                
+                HStack(spacing: 4) {
+                    Image(systemName: "flame.fill")
+                        .foregroundColor(.orange)
+                        .font(.caption)
+                    Text("STREAK: \(streak)")
+                        .font(.system(.caption, design: .monospaced).bold())
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Color.orange.opacity(0.2))
+                .cornerRadius(8)
             }
-            .foregroundColor(.white)
             
             Spacer()
             
-            Text("⏱ \(timer)s")
-                .foregroundColor(timer <= 5 ? .red : .white)
-            
-            Button {
-                showBoard = true
-            } label: {
-                HStack {
-                    Image(systemName: "pencil.and.outline")
-                    Text("Rough Work")
-                }
+            // Timer Badge
+            HStack(spacing: 6) {
+                Image(systemName: "timer")
+                    .foregroundColor(timer <= 5 ? .red : .green)
+                    .font(.caption.bold())
+                Text("\(timer)s")
+                    .font(.system(.footnote, design: .monospaced).bold())
+                    .foregroundColor(.white)
             }
-            .buttonStyle(.bordered)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background((timer <= 5 ? Color.red : Color.green).opacity(0.2))
+            .cornerRadius(8)
+            .shadow(color: (timer <= 5 ? Color.red : Color.green).opacity(0.25), radius: 4)
             
+            // Speaker Button
             Button {
                 voiceQuestion()
             } label: {
                 Image(systemName: "speaker.wave.2.fill")
-                    .padding(10)
-                    .background(.ultraThinMaterial)
+                    .font(.caption)
+                    .foregroundColor(.white)
+                    .padding(8)
+                    .background(Color.white.opacity(0.12))
                     .clipShape(Circle())
             }
         }
@@ -140,138 +201,270 @@ struct PhysicsRacePro: View {
     
     // MARK: Question Card
     var questionCard: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 14) {
+            Text("ARCADE HUD / SIMULATION")
+                .font(.system(.caption2, design: .monospaced).bold())
+                .foregroundColor(.cyan)
+                .tracking(2)
             
-            Text("Acceleration: \(Int(acceleration)) m/s²")
-            
-            if questionType != .time {
-                Text("Time: \(Int(time)) s")
+            // Badges Grid
+            HStack(spacing: 8) {
+                ParameterBadge(label: "Acceleration", value: "\(Int(acceleration)) m/s²", icon: "gauge.with.needle.fill", color: .cyan)
+                
+                if questionType != .time {
+                    ParameterBadge(label: "Time", value: "\(Int(time)) s", icon: "timer", color: .purple)
+                }
+                
+                if questionType != .distance {
+                    ParameterBadge(label: "Distance", value: "\(Int(distance)) m", icon: "arrow.left.and.right", color: .green)
+                }
+                
+                if questionType == .force {
+                    ParameterBadge(label: "Mass", value: "\(Int(mass)) kg", icon: "scalemass.fill", color: .orange)
+                }
             }
             
-            if questionType != .distance {
-                Text("Distance: \(Int(distance)) m")
-            }
+            Divider()
+                .background(Color.white.opacity(0.12))
             
-            if questionType == .force {
-                Text("Mass: \(Int(mass)) kg")
+            // Target
+            HStack {
+                Text("TARGET VARIABLE")
+                    .font(.system(.caption2, design: .monospaced))
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text(title())
+                    .font(.system(.footnote, design: .rounded).bold())
+                    .foregroundColor(.yellow)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.yellow.opacity(0.18))
+                    .cornerRadius(8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.yellow.opacity(0.35), lineWidth: 1)
+                    )
             }
-            
-            Text("Find: \(title())")
-                .foregroundColor(.yellow)
-                .bold()
         }
         .padding()
-        .background(.ultraThinMaterial)
-        .cornerRadius(20)
+        .background(Color.black.opacity(0.35))
+        .cornerRadius(18)
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
         .padding(.horizontal)
     }
     
     // MARK: Game Track
     var gameTrack: some View {
         GeometryReader { geo in
-            
             ZStack(alignment: .leading) {
+                // Asphalt track lane
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(LinearGradient(
+                        colors: [Color(red: 0.12, green: 0.14, blue: 0.22), Color(red: 0.05, green: 0.06, blue: 0.10)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ))
                 
-                Image("road")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 160)
-                    .clipped()
-                    .cornerRadius(16)
+                // Neon glowing boundaries
+                VStack {
+                    Rectangle()
+                        .fill(LinearGradient(colors: [.blue, .cyan], startPoint: .leading, endPoint: .trailing))
+                        .frame(height: 2)
+                        .shadow(color: .cyan.opacity(0.7), radius: 3)
+                    Spacer()
+                    Rectangle()
+                        .fill(LinearGradient(colors: [.blue, .cyan], startPoint: .leading, endPoint: .trailing))
+                        .frame(height: 2)
+                        .shadow(color: .cyan.opacity(0.7), radius: 3)
+                }
                 
-                Text("START")
-                    .font(.caption.bold())
-                    .foregroundColor(.white)
-                    .padding(.leading, 12)
-                    .offset(y: -50)
+                // Checkered Start Band
+                CheckeredBand()
+                    .frame(width: 12)
+                    .padding(.leading, 30)
                 
-                Text("FINISH 🏁")
-                    .font(.caption.bold())
-                    .foregroundColor(.white)
-                    .position(x: geo.size.width - 50, y: 25)
+                // Checkered Finish Band
+                CheckeredBand()
+                    .frame(width: 12)
+                    .padding(.trailing, 30)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                
+                // Track Labels
+                VStack {
+                    HStack {
+                        Text("START")
+                            .font(.system(size: 9, weight: .bold, design: .monospaced))
+                            .foregroundColor(.cyan.opacity(0.7))
+                            .padding(.leading, 24)
+                        Spacer()
+                        Text("FINISH 🏁")
+                            .font(.system(size: 9, weight: .bold, design: .monospaced))
+                            .foregroundColor(.green.opacity(0.7))
+                            .padding(.trailing, 16)
+                    }
+                    .padding(.top, 8)
+                    Spacer()
+                }
+                
+                // Center dotted lane separator
+                Path { path in
+                    path.move(to: CGPoint(x: 45, y: 80))
+                    path.addLine(to: CGPoint(x: geo.size.width - 45, y: 80))
+                }
+                .stroke(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [10, 8]))
+                .foregroundColor(.white.opacity(0.2))
+                
+                // Animated Car
+                let startX: CGFloat = 30 + 12 + 5 // after start band
+                let endX: CGFloat = geo.size.width - 30 - 12 - 85 // before finish band
+                let currentX = startX + (carProgress * (endX - startX))
                 
                 Image("car")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 80, height: 40)
-                    .offset(x: carProgress * (geo.size.width - 120), y: 60)
-                    .shadow(color: glow ? .green : .black.opacity(0.3), radius: 10)
+                    .position(x: currentX + 40, y: 80)
+                    .shadow(color: glow ? .green : .blue.opacity(0.4), radius: glow ? 12 : 5)
             }
         }
         .frame(height: 160)
         .padding(.horizontal)
     }
     
-    // MARK: Input Section (FIXED BUTTON HERE)
+    // MARK: Input Section
     var inputSection: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 16) {
+            Text("INPUT METRIC FOR SIMULATION")
+                .font(.system(.caption, design: .monospaced).bold())
+                .foregroundColor(.secondary)
+                .tracking(1.5)
             
-            TextField("Enter Answer", text: $userAnswer)
-                .keyboardType(.decimalPad)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-            
-            // ✅ FIXED FULL WIDTH CLICKABLE BUTTON
-            Button {
-                checkAnswer()
-            } label: {
-                Text("Drive 🚗")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
+            HStack(spacing: 12) {
+                TextField("0.0", text: $userAnswer)
+                    .keyboardType(.decimalPad)
+                    .font(.system(.body, design: .monospaced))
+                    .padding(14)
+                    .background(Color.white.opacity(0.06))
                     .cornerRadius(12)
-                    .contentShape(Rectangle())
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                    )
+                
+                Button {
+                    checkAnswer()
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Drive")
+                        Image(systemName: "bolt.fill")
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 14)
+                    .background(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .cornerRadius(12)
+                    .shadow(color: .blue.opacity(0.3), radius: 6)
+                }
             }
             
-            Button("Hint 💡") {
-                hint = getHint()
+            Button {
+                showHint = true
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "lightbulb.fill")
+                        .foregroundColor(.orange)
+                    Text("Show Hint")
+                        .font(.footnote.bold())
+                        .foregroundColor(.orange)
+                }
             }
-            
-            Text(hint)
-                .foregroundColor(.orange)
         }
         .padding()
+        .background(.ultraThinMaterial)
+        .cornerRadius(20)
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
     }
     
     // MARK: Popup
     var popupOverlay: some View {
         ZStack {
             if showPopup {
-                
-                Color.black.opacity(0.3)
+                Color.black.opacity(0.45)
                     .ignoresSafeArea()
                 
-                VStack(spacing: 20) {
-                    
+                VStack(spacing: 24) {
+                    // Result title with custom glow
                     Text(resultText)
-                        .font(.title2.bold())
+                        .font(.system(.title2, design: .rounded).bold())
+                        .foregroundColor(resultText.contains("Wrong") ? .red : (resultText.contains("Perfect") ? .green : .orange))
+                        .shadow(color: (resultText.contains("Wrong") ? Color.red : (resultText.contains("Perfect") ? Color.green : Color.orange)).opacity(0.3), radius: 5)
                     
-                    Text(solutionText)
-                        .multilineTextAlignment(.center)
+                    VStack(spacing: 12) {
+                        Text("Concept Solution:")
+                            .font(.caption.bold())
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Text(solutionText)
+                            .font(.system(.body, design: .monospaced).bold())
+                            .foregroundColor(.primary)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.white.opacity(0.06))
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                            )
+                    }
                     
-                    Button {
-                        generateAIFeedback()
-                    } label: {
-                        HStack {
-                            Image(systemName: "sparkles")
-                            Text("Get AI Insight")
+                    VStack(spacing: 12) {
+                        Button {
+                            generateAIFeedback()
+                        } label: {
+                            HStack {
+                                Image(systemName: "sparkles")
+                                Text("Get AI Performance Insight")
+                            }
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(LinearGradient(colors: [.indigo, .purple], startPoint: .leading, endPoint: .trailing))
+                            .cornerRadius(12)
                         }
-                        .frame(maxWidth: .infinity)
+                        
+                        Button {
+                            showPopup = false
+                            nextRound()
+                        } label: {
+                            Text("Next Round")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.white.opacity(0.1))
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                                )
+                        }
                     }
-                    .buttonStyle(.borderedProminent)
-                    
-                    Button("Next Round") {
-                        showPopup = false
-                        nextRound()
-                    }
-                    .buttonStyle(.bordered)
                 }
                 .padding(25)
                 .background(.ultraThinMaterial)
                 .cornerRadius(24)
-                .frame(maxWidth: 350)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                )
+                .frame(maxWidth: 340)
+                .shadow(color: .black.opacity(0.35), radius: 20, x: 0, y: 10)
             }
         }
     }
@@ -342,7 +535,9 @@ struct PhysicsRacePro: View {
     }
     
     func moveCar(speed: CGFloat) {
-        carProgress = speed
+        withAnimation(.easeInOut(duration: 1.0)) {
+            carProgress = speed
+        }
     }
     
     func glowEffect() {
@@ -440,4 +635,222 @@ struct PhysicsRacePro: View {
             showAISheet = true
         }
     }
+    
+    // MARK: Solver Hint Overlay
+    var hintOverlay: some View {
+        Group {
+            if showHint {
+                ZStack {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            showHint = false
+                        }
+                    
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "lightbulb.fill")
+                                .foregroundColor(.yellow)
+                                .font(.title2)
+                            Text("Solver Hint")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Button {
+                                showHint = false
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.secondary)
+                                    .font(.title3)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        
+                        Divider()
+                        
+                        ScrollView(showsIndicators: false) {
+                            VStack(alignment: .leading, spacing: 14) {
+                                Text("🎯 Solve Guide:")
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(.blue)
+                                
+                                switch questionType {
+                                case .force:
+                                    Text("To find Force, apply Newton's Second Law of Motion: F = m × a")
+                                        .font(.footnote)
+                                        .foregroundColor(.primary)
+                                    
+                                    Text("F = m × a")
+                                        .font(.system(.body, design: .monospaced))
+                                        .bold()
+                                        .padding(6)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(6)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Current Values:")
+                                            .font(.caption.bold())
+                                        Text("• Mass (m) = \(Int(mass)) kg")
+                                        Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
+                                    }
+                                    .font(.footnote)
+                                    .foregroundColor(.secondary)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Step-by-Step Calculation:")
+                                            .font(.caption.bold())
+                                        Text("F = \(Int(mass)) × \(Int(acceleration)) = \(Int(mass * acceleration)) N")
+                                            .font(.system(.footnote, design: .monospaced))
+                                            .padding(6)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.gray.opacity(0.1))
+                                            .cornerRadius(6)
+                                    }
+                                    
+                                case .distance:
+                                    Text("To find Distance (s), use the Kinematics equation of motion starting from rest (u = 0): s = ½at²")
+                                        .font(.footnote)
+                                        .foregroundColor(.primary)
+                                    
+                                    Text("s = ½ × a × t²")
+                                        .font(.system(.body, design: .monospaced))
+                                        .bold()
+                                        .padding(6)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(6)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Current Values:")
+                                            .font(.caption.bold())
+                                        Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
+                                        Text("• Time (t) = \(Int(time)) s")
+                                    }
+                                    .font(.footnote)
+                                    .foregroundColor(.secondary)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Step-by-Step Calculation:")
+                                            .font(.caption.bold())
+                                        Text("s = 0.5 × \(Int(acceleration)) × (\(Int(time))²)\ns = 0.5 × \(Int(acceleration)) × \(Int(time * time)) = \(Int(0.5 * acceleration * time * time)) m")
+                                            .font(.system(.footnote, design: .monospaced))
+                                            .padding(6)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.gray.opacity(0.1))
+                                            .cornerRadius(6)
+                                    }
+                                    
+                                case .time:
+                                    Text("To find Time (t), rearrange the kinematics equation (s = ½at²) to solve for t:")
+                                        .font(.footnote)
+                                        .foregroundColor(.primary)
+                                    
+                                    Text("t = √(2s / a)")
+                                        .font(.system(.body, design: .monospaced))
+                                        .bold()
+                                        .padding(6)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(6)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Current Values:")
+                                            .font(.caption.bold())
+                                        Text("• Distance (s) = \(Int(distance)) m")
+                                        Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
+                                    }
+                                    .font(.footnote)
+                                    .foregroundColor(.secondary)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Step-by-Step Calculation:")
+                                            .font(.caption.bold())
+                                        Text("t = √((2 × \(Int(distance))) / \(Int(acceleration)))\nt = √(\(Int(2 * distance)) / \(Int(acceleration))) ≈ \(String(format: "%.2f", sqrt(2 * distance / acceleration))) seconds")
+                                            .font(.system(.footnote, design: .monospaced))
+                                            .padding(6)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.gray.opacity(0.1))
+                                            .cornerRadius(6)
+                                    }
+                                }
+                            }
+                        }
+                        .frame(maxHeight: 280)
+                        
+                        Divider()
+                        
+                        Button("Got it!") {
+                            showHint = false
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .padding(20)
+                    .frame(maxWidth: 340)
+                    .background(
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(.ultraThinMaterial)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                    )
+                    .shadow(radius: 10)
+                    .padding()
+                }
+            }
+        }
+    }
 }
+
+// MARK: - Premium UI Subviews
+struct ParameterBadge: View {
+    let label: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.caption2)
+                    .foregroundColor(color)
+                Text(label)
+                    .font(.system(size: 9, weight: .bold, design: .rounded))
+                    .foregroundColor(.secondary)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
+            }
+            Text(value)
+                .font(.system(.footnote, design: .monospaced).bold())
+                .foregroundColor(.white)
+                .minimumScaleFactor(0.8)
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 4)
+        .background(Color.white.opacity(0.06))
+        .cornerRadius(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.white.opacity(0.05), lineWidth: 1)
+        )
+    }
+}
+
+struct CheckeredBand: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(0..<10, id: \.self) { row in
+                HStack(spacing: 0) {
+                    ForEach(0..<2, id: \.self) { col in
+                        Rectangle()
+                            .fill((row + col) % 2 == 0 ? Color.white : Color.black)
+                    }
+                }
+            }
+        }
+        .opacity(0.15)
+    }
+}
+
