@@ -130,7 +130,7 @@ struct ProjectileMotionSimulator: View {
                     .onAppear {
                         containerWidth = geo.size.width
                     }
-                    .onChange(of: geo.size.width) { newValue in
+                    .onChange(of: geo.size.width) { _, newValue in
                         containerWidth = newValue
                     }
             }

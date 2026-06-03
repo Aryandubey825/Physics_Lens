@@ -4,6 +4,7 @@ struct ExploreCard: View {
     var title: String
     var subtitle: String
     var color: Color
+    var icon: String = "sparkles"
     
     var body: some View {
         
@@ -29,7 +30,7 @@ struct ExploreCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 
                 HStack {
-                    Image(systemName: "sparkles")
+                    Image(systemName: icon)
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.85))
                     

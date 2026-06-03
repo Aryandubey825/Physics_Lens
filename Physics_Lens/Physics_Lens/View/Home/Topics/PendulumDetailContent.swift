@@ -1,11 +1,5 @@
 
 import SwiftUI
-struct FormulaItem: Identifiable {
-    let id = UUID()
-    let title: String
-    let formula: String
-    let explanation: String
-}
 
 enum PendulumSection: String, CaseIterable {
     case overview = "Overview"
