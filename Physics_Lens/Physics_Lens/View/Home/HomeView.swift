@@ -44,7 +44,7 @@ struct HomeView: View {
                  
                     HStack {
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Hi, Gopalji 👋")
+                            Text("Hi 👋")
                                 .font(.largeTitle.bold())
                             Text("Discover the beauty of physics through immersive and interactive simulations.")
                                 .foregroundStyle(.secondary)

@@ -5,11 +5,16 @@ struct LaunchView: View {
     
     @State private var isActive = false
     @State private var animate = false
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     
     var body: some View {
         
         if isActive {
-            OnboardingView()
+            if hasCompletedOnboarding {
+                MainTabView()
+            } else {
+                OnboardingView()
+            }
         } else {
             
             ZStack {

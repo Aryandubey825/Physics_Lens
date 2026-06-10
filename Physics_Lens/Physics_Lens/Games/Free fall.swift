@@ -1,6 +1,5 @@
 import SwiftUI
 import UIKit
-import FoundationModels
 
 @available(iOS 26.0, *)
 struct FreeFallGame: View {
@@ -16,9 +15,6 @@ struct FreeFallGame: View {
     @State private var fallDuration: Double = 1.5
     @State private var showSplash = false
     @State private var showHint = false
-    
-    @StateObject private var aiManager = AIFeedbackManager()
-    @State private var showAISheet = false
     
     @StateObject private var voiceManager = VoiceAssistantManager()
     @State private var showBoard = false
@@ -223,38 +219,75 @@ struct FreeFallGame: View {
     var popupOverlay: some View {
         ZStack {
             if showPopup {
-                Color.black.opacity(0.25).ignoresSafeArea()
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
                 
                 VStack(spacing: 20) {
+                    // Status Badge Icon
+                    let statusColor: Color = wasCorrect ? .green : .red
+                    let statusIcon: String = wasCorrect ? "checkmark.seal.fill" : "xmark.seal.fill"
+                    let statusTitle = wasCorrect ? "Correct!" : "Incorrect"
                     
-                    Text(wasCorrect ? "🎯 Correct!" : "❌ Incorrect")
-                        .font(.title.bold())
+                    VStack(spacing: 8) {
+                        Image(systemName: statusIcon)
+                            .font(.system(size: 48))
+                            .foregroundColor(statusColor)
+                            .shadow(color: statusColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        
+                        Text(statusTitle)
+                            .font(.system(.title2, design: .rounded).bold())
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.top, 8)
                     
-                    Divider()
+                    // Stats Inset Box
+                    VStack(spacing: 12) {
+                        statRow(title: "Correct Answer", value: "\(String(format: "%.2f", correctAnswer))")
+                        statRow(title: "Your Answer", value: userAnswer.isEmpty ? "--" : userAnswer)
+                        statRow(title: "Formula Used", value: formulaForFindVariable())
+                    }
+                    .padding(14)
+                    .background(Color.primary.opacity(0.04))
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.primary.opacity(0.06), lineWidth: 1)
+                    )
                     
-                    statRow(title: "Correct Answer",
-                            value: "\(String(format: "%.2f", correctAnswer))")
-                    
-                    statRow(title: "Your Answer",
-                            value: userAnswer)
-                    
-                    statRow(title: "Formula Used",
-                            value: formulaForFindVariable())
-                    
-                    Divider()
-                    
-                    Button("Next Round") {
+                    // Actions Stack
+                    Button {
                         showPopup = false
                         generateRound()
+                    } label: {
+                        Text("Next Round")
+                            .font(.headline.bold())
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                            .cornerRadius(14)
+                            .shadow(color: Color.blue.opacity(0.25), radius: 6, x: 0, y: 3)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.plain)
                 }
                 .padding(24)
-                .frame(maxWidth: 350)
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(.ultraThinMaterial)
+                .frame(maxWidth: 340)
+                .background(.ultraThinMaterial)
+                .cornerRadius(28)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28)
+                        .stroke(
+                            LinearGradient(
+                                colors: [.white.opacity(0.55), .white.opacity(0.15)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
                 )
+                .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
+                .transition(.scale.combined(with: .opacity))
             }
         }
     }
@@ -362,7 +395,7 @@ struct FreeFallGame: View {
     var hintOverlay: some View {
         Group {
             if showHint {
-                Color.black.opacity(0.5)
+                Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .onTapGesture {
                         showHint = false
@@ -370,13 +403,13 @@ struct FreeFallGame: View {
                 
                 let hint = getHintText()
                 
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 10) {
                         Image(systemName: "lightbulb.fill")
                             .foregroundColor(.yellow)
-                            .font(.title2)
+                            .font(.title3)
                         Text("Solver Hint")
-                            .font(.headline)
+                            .font(.title3.bold())
                             .foregroundColor(.primary)
                         Spacer()
                         Button {
@@ -391,60 +424,75 @@ struct FreeFallGame: View {
                     
                     Divider()
                     
-                    Text(hint.title)
-                        .font(.subheadline.bold())
-                        .foregroundColor(.blue)
-                    
-                    Text(hint.explanation)
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                    
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Formula to Use:")
-                            .font(.caption.bold())
-                            .foregroundColor(.primary)
-                        Text(hint.formula)
-                            .font(.system(.body, design: .monospaced))
-                            .bold()
-                            .padding(8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.blue.opacity(0.1))
-                            .cornerRadius(6)
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text(hint.title)
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                            
+                            Text(hint.explanation)
+                                .font(.body)
+                                .foregroundColor(.primary)
+                                .lineSpacing(4)
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Formula to Use:")
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(.primary)
+                                Text(hint.formula)
+                                    .font(.system(.body, design: .monospaced))
+                                    .bold()
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.blue.opacity(0.08))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                    )
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Step-by-Step for Current Values:")
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(.primary)
+                                Text(hint.example)
+                                    .font(.system(.subheadline, design: .monospaced))
+                                    .foregroundColor(.primary.opacity(0.85))
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color(.secondarySystemGroupedBackground))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                    )
+                            }
+                        }
                     }
-                    
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Step-by-Step for Current Values:")
-                            .font(.caption.bold())
-                            .foregroundColor(.primary)
-                        Text(hint.example)
-                            .font(.system(.footnote, design: .monospaced))
-                            .foregroundColor(.secondary)
-                            .padding(8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(6)
-                    }
+                    .frame(maxHeight: 380)
                     
                     Divider()
                     
-                    Button("Got it!") {
+                    Button {
                         showHint = false
+                    } label: {
+                        Text("Got it!")
+                            .font(.headline.bold())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(14)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.plain)
                 }
-                .padding(20)
-                .frame(maxWidth: 340)
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(.ultraThinMaterial)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24)
-                        .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                )
-                .shadow(radius: 10)
-                .padding()
+                .padding(24)
+                .frame(maxWidth: 420)
+                .background(Color(.systemBackground))
+                .cornerRadius(24)
+                .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: 10)
+                .padding(.horizontal, 24)
             }
         }
     }

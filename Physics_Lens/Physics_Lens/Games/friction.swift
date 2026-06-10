@@ -1,17 +1,14 @@
 import SwiftUI
-import FoundationModels
 import AVFoundation
 
 @available(iOS 26.0, *)
 struct FrictionGame: View {
     
     @StateObject private var voiceManager = VoiceAssistantManager()
-    @StateObject private var aiManager = AIFeedbackManager()
     
     @State private var showBoard = false
     @State private var showHint = false
     @State private var showPopup = false
-    @State private var showAISheet = false
     
     @State private var selectedSurface: Surface = surfaces[0]
     @State private var questionType: QuestionType = .move
@@ -251,181 +248,217 @@ struct FrictionGame: View {
     }
     
     // MARK: Hint Overlay
+    // MARK: Hint Overlay
     var hintOverlay: some View {
         Group {
             if showHint {
-                ZStack {
-                    Color.black.opacity(0.5)
-                        .ignoresSafeArea()
-                        .onTapGesture {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showHint = false
+                    }
+                
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 10) {
+                        Image(systemName: "lightbulb.fill")
+                            .foregroundColor(.yellow)
+                            .font(.title3)
+                        Text("Solver Hint")
+                            .font(.title3.bold())
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Button {
                             showHint = false
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                                .font(.title3)
                         }
+                        .buttonStyle(.plain)
+                    }
                     
-                    VStack(alignment: .leading, spacing: 16) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "lightbulb.fill")
-                                .foregroundColor(.yellow)
-                                .font(.title2)
-                            Text("Solver Hint")
+                    Divider()
+                    
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("🎯 Solve Guide:")
                                 .font(.headline)
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Button {
-                                showHint = false
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.secondary)
-                                    .font(.title3)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        
-                        Divider()
-                        
-                        ScrollView(showsIndicators: false) {
-                            VStack(alignment: .leading, spacing: 14) {
-                                Text("🎯 Solve Guide:")
-                                    .font(.subheadline.bold())
-                                    .foregroundColor(.blue)
+                                .foregroundColor(.blue)
+                            
+                            if questionType == .move {
+                                Text("To check if the box moves, compare the Applied Force (F) with the Maximum Static Friction Force (F_static,max):")
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                    .lineSpacing(4)
                                 
-                                if questionType == .move {
-                                    Text("To check if the box moves, compare the Applied Force (F) with the Maximum Static Friction Force (F_static,max):")
-                                        .font(.footnote)
-                                        .foregroundColor(.primary)
+                                Text("F_static,max = μ_s × m × g")
+                                    .font(.system(.body, design: .monospaced))
+                                    .bold()
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.blue.opacity(0.08))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                    )
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Current Values:")
+                                        .font(.subheadline.bold())
+                                    Text("• Applied Force (F) = \(Int(appliedForce)) N")
+                                    Text("• Mass (m) = \(Int(mass)) kg")
+                                    Text("• Coefficient (μ_s) = \(selectedSurface.staticFriction, specifier: "%.2f")")
+                                    Text("• Gravity (g) = 9.8 m/s²")
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.primary.opacity(0.85))
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Step-by-Step Calculation:")
+                                        .font(.subheadline.bold())
                                     
-                                    Text("F_static,max = μ_s × m × g")
-                                        .font(.system(.body, design: .monospaced))
-                                        .bold()
-                                        .padding(6)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(6)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Current Values:")
-                                            .font(.caption.bold())
-                                        Text("• Applied Force (F) = \(Int(appliedForce)) N")
-                                        Text("• Mass (m) = \(Int(mass)) kg")
-                                        Text("• Coefficient (μ_s) = \(selectedSurface.staticFriction, specifier: "%.2f")")
-                                        Text("• Gravity (g) = 9.8 m/s²")
-                                    }
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Step-by-Step Calculation:")
-                                            .font(.caption.bold())
-                                        
-                                        Text("F_static,max = \(selectedSurface.staticFriction, specifier: "%.2f") × \(Int(mass)) × 9.8 = \(String(format: "%.1f", maxStaticForce)) N")
-                                            .font(.system(.footnote, design: .monospaced))
-                                            .padding(6)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .background(Color.gray.opacity(0.1))
-                                            .cornerRadius(6)
-                                        
-                                        if appliedForce > maxStaticForce {
-                                            Text("Since Applied Force (\(Int(appliedForce)) N) is greater than F_static,max (\(String(format: "%.1f", maxStaticForce)) N), the box will move (Yes).")
-                                                .font(.footnote.bold())
-                                                .foregroundColor(.green)
-                                                .padding(.top, 4)
-                                        } else {
-                                            Text("Since Applied Force (\(Int(appliedForce)) N) is less or equal to F_static,max (\(String(format: "%.1f", maxStaticForce)) N), the box will not move (No).")
-                                                .font(.footnote.bold())
-                                                .foregroundColor(.red)
-                                                .padding(.top, 4)
-                                        }
-                                    }
-                                } else {
-                                    Text("First, verify if the box moves (Applied Force > F_static,max):")
-                                        .font(.footnote)
-                                        .foregroundColor(.primary)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("F_static,max = μ_s × m × g = \(String(format: "%.1f", maxStaticForce)) N")
-                                            .font(.system(.footnote, design: .monospaced))
-                                            .padding(6)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .background(Color.gray.opacity(0.1))
-                                            .cornerRadius(6)
-                                        
-                                        Text("Applied Force = \(Int(appliedForce)) N")
-                                            .font(.footnote)
-                                    }
+                                    Text("F_static,max = \(selectedSurface.staticFriction, specifier: "%.2f") × \(Int(mass)) × 9.8 = \(String(format: "%.1f", maxStaticForce)) N")
+                                        .font(.system(.subheadline, design: .monospaced))
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.secondarySystemGroupedBackground))
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                        )
                                     
                                     if appliedForce > maxStaticForce {
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            Text("The box moves! Find acceleration using:")
-                                                .font(.footnote.bold())
-                                                .foregroundColor(.green)
-                                            
-                                            Text("a = (F - F_kinetic) / m")
-                                                .font(.system(.body, design: .monospaced))
-                                                .bold()
-                                                .padding(6)
-                                                .background(Color.blue.opacity(0.1))
-                                                .cornerRadius(6)
-                                            
-                                            Text("Where Kinetic Friction Force (F_kinetic) is:")
-                                                .font(.caption)
-                                            Text("F_kinetic = μ_k × m × g\nF_kinetic = \(selectedSurface.kineticFriction, specifier: "%.2f") × \(Int(mass)) × 9.8 = \(String(format: "%.1f", kineticForce)) N")
-                                                .font(.system(.caption, design: .monospaced))
-                                                .padding(6)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .background(Color.gray.opacity(0.1))
-                                                .cornerRadius(6)
-                                            
-                                            Text("Step-by-Step Calculation:")
-                                                .font(.caption.bold())
-                                            Text("a = (\(Int(appliedForce)) - \(String(format: "%.1f", kineticForce))) / \(Int(mass))\na ≈ \(String(format: "%.2f", acceleration)) m/s²")
-                                                .font(.system(.footnote, design: .monospaced))
-                                                .foregroundColor(.secondary)
-                                                .padding(6)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .background(Color.gray.opacity(0.1))
-                                                .cornerRadius(6)
-                                        }
+                                        Text("Since Applied Force (\(Int(appliedForce)) N) is greater than F_static,max (\(String(format: "%.1f", maxStaticForce)) N), the box will move (Yes).")
+                                            .font(.body.bold())
+                                            .foregroundColor(.green)
+                                            .padding(.top, 4)
                                     } else {
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            Text("The box does not move because Applied Force (\(Int(appliedForce)) N) ≤ F_static,max (\(String(format: "%.1f", maxStaticForce)) N).")
-                                                .font(.footnote.bold())
-                                                .foregroundColor(.red)
-                                            
-                                            Text("Therefore, acceleration a = 0 m/s².")
-                                                .font(.footnote)
-                                            
-                                            Text("a = 0 m/s²")
-                                                .font(.system(.body, design: .monospaced))
-                                                .bold()
-                                                .padding(6)
-                                                .background(Color.blue.opacity(0.1))
-                                                .cornerRadius(6)
-                                        }
+                                        Text("Since Applied Force (\(Int(appliedForce)) N) is less or equal to F_static,max (\(String(format: "%.1f", maxStaticForce)) N), the box will not move (No).")
+                                            .font(.body.bold())
+                                            .foregroundColor(.red)
+                                            .padding(.top, 4)
+                                    }
+                                }
+                            } else {
+                                Text("First, verify if the box moves (Applied Force > F_static,max):")
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                    .lineSpacing(4)
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("F_static,max = μ_s × m × g = \(String(format: "%.1f", maxStaticForce)) N")
+                                        .font(.system(.subheadline, design: .monospaced))
+                                        .padding(10)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.secondarySystemGroupedBackground))
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                        )
+                                    
+                                    Text("Applied Force = \(Int(appliedForce)) N")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                
+                                if appliedForce > maxStaticForce {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        Text("The box moves! Find acceleration using:")
+                                            .font(.body.bold())
+                                            .foregroundColor(.green)
+                                            .padding(.top, 4)
+                                        
+                                        Text("a = (F - F_kinetic) / m")
+                                            .font(.system(.body, design: .monospaced))
+                                            .bold()
+                                            .padding(12)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.blue.opacity(0.08))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                            )
+                                        
+                                        Text("Where Kinetic Friction Force (F_kinetic) is:")
+                                            .font(.subheadline.bold())
+                                        
+                                        Text("F_kinetic = μ_k × m × g\nF_kinetic = \(selectedSurface.kineticFriction, specifier: "%.2f") × \(Int(mass)) × 9.8 = \(String(format: "%.1f", kineticForce)) N")
+                                            .font(.system(.subheadline, design: .monospaced))
+                                            .padding(10)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color(.secondarySystemGroupedBackground))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                            )
+                                        
+                                        Text("Step-by-Step Calculation:")
+                                            .font(.subheadline.bold())
+                                        Text("a = (\(Int(appliedForce)) - \(String(format: "%.1f", kineticForce))) / \(Int(mass))\na ≈ \(String(format: "%.2f", acceleration)) m/s²")
+                                            .font(.system(.subheadline, design: .monospaced))
+                                            .foregroundColor(.primary.opacity(0.85))
+                                            .padding(10)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color(.secondarySystemGroupedBackground))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                            )
+                                    }
+                                } else {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        Text("The box does not move because Applied Force (\(Int(appliedForce)) N) ≤ F_static,max (\(String(format: "%.1f", maxStaticForce)) N).")
+                                            .font(.body.bold())
+                                            .foregroundColor(.red)
+                                            .padding(.top, 4)
+                                        
+                                        Text("Therefore, acceleration a = 0 m/s².")
+                                            .font(.body)
+                                        
+                                        Text("a = 0 m/s²")
+                                            .font(.system(.body, design: .monospaced))
+                                            .bold()
+                                            .padding(12)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.blue.opacity(0.08))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                            )
                                     }
                                 }
                             }
                         }
-                        .frame(maxHeight: 300)
-                        
-                        Divider()
-                        
-                        Button("Got it!") {
-                            showHint = false
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .frame(maxWidth: .infinity)
                     }
-                    .padding(20)
-                    .frame(maxWidth: 340)
-                    .background(
-                        RoundedRectangle(cornerRadius: 24)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .shadow(radius: 10)
-                    .padding()
+                    .frame(maxHeight: 380)
+                    
+                    Divider()
+                    
+                    Button {
+                        showHint = false
+                    } label: {
+                        Text("Got it!")
+                            .font(.headline.bold())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(14)
+                    }
+                    .buttonStyle(.plain)
                 }
+                .padding(24)
+                .frame(maxWidth: 420)
+                .background(Color(.systemBackground))
+                .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: 10)
+                .padding(.horizontal, 24)
             }
         }
     }
@@ -434,70 +467,81 @@ struct FrictionGame: View {
     var popupOverlay: some View {
         ZStack {
             if showPopup {
-                Color.black.opacity(0.3).ignoresSafeArea()
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
                 
                 VStack(spacing: 20) {
+                    // Status Badge Icon
+                    let statusColor: Color = answeredCorrectly ? .green : .red
+                    let statusIcon: String = answeredCorrectly ? "checkmark.seal.fill" : "xmark.seal.fill"
+                    let statusTitle = answeredCorrectly ? "Correct!" : "Wrong!"
                     
-                    Text(answeredCorrectly ? "✅ Correct!" : "❌ Wrong!")
-                        .font(.title2.bold())
+                    VStack(spacing: 8) {
+                        Image(systemName: statusIcon)
+                            .font(.system(size: 48))
+                            .foregroundColor(statusColor)
+                            .shadow(color: statusColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        
+                        Text(statusTitle)
+                            .font(.system(.title2, design: .rounded).bold())
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.top, 8)
                     
-                    statRow(title: "Max Static Force",
-                            value: "\(String(format: "%.2f", maxStaticForce)) N")
+                    // Stats Inset Box
+                    VStack(spacing: 12) {
+                        statRow(title: "Max Static Force", value: "\(String(format: "%.2f", maxStaticForce)) N")
+                        statRow(title: "Kinetic Force", value: "\(String(format: "%.2f", kineticForce)) N")
+                        statRow(title: "Acceleration", value: "\(String(format: "%.2f", acceleration)) m/s²")
+                    }
+                    .padding(14)
+                    .background(Color.primary.opacity(0.04))
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.primary.opacity(0.06), lineWidth: 1)
+                    )
                     
-                    statRow(title: "Kinetic Force",
-                            value: "\(String(format: "%.2f", kineticForce)) N")
-                    
-                    statRow(title: "Acceleration",
-                            value: "\(String(format: "%.2f", acceleration)) m/s²")
-                    
-                    Button {
-                        generateAIFeedback()
-                    } label: {
-                        HStack {
-                            Image(systemName: "sparkles")
-                            Text("Get AI Insight")
+                    // Actions Stack
+                    VStack(spacing: 10) {
+                        Button {
+                            newRound()
+                            showPopup = false
+                        } label: {
+                            Text("Next Round")
+                                .font(.headline.bold())
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(Color.primary.opacity(0.06))
+                                .cornerRadius(14)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                                )
                         }
-                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.borderedProminent)
-                    
-                    Button("Next Round") {
-                        newRound()
-                        showPopup = false
-                    }
-                    .buttonStyle(.bordered)
                 }
                 .padding(24)
+                .frame(maxWidth: 340)
                 .background(.ultraThinMaterial)
-                .cornerRadius(24)
-                .frame(maxWidth: 350)
+                .cornerRadius(28)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28)
+                        .stroke(
+                            LinearGradient(
+                                colors: [.white.opacity(0.55), .white.opacity(0.15)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
+                )
+                .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
+                .transition(.scale.combined(with: .opacity))
             }
-        }
-        .sheet(isPresented: $showAISheet) {
-            NavigationStack {
-                VStack(spacing: 20) {
-                    
-                    Text("AI Performance Review")
-                        .font(.title2.bold())
-                    
-                    if aiManager.isLoading {
-                        ProgressView("Analyzing...")
-                            .padding(.top, 30)
-                    } else {
-                        AIFeedbackView(feedback: aiManager.feedbackText)
-                    }
-                    
-                    Button("Close") {
-                        showAISheet = false
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .padding(.top, 10)
-                }
-                .padding()
-            }
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
         }
     }
     
@@ -534,21 +578,6 @@ struct FrictionGame: View {
         }
         
         showPopup = true
-    }
-    
-    func generateAIFeedback() {
-        let result = GameResult(
-            topic: "Friction",
-            userInput: "Mass: \(mass), Force: \(appliedForce), Surface: \(selectedSurface.name)",
-            correctConcept: "Fₛ(max)=μₛmg, Fₖ=μₖmg, a=(F-Fₖ)/m",
-            userOutcome: answeredCorrectly ? "Correct" : "Incorrect",
-            score: score
-        )
-        
-        Task {
-            await aiManager.analyze(result: result)
-            showAISheet = true
-        }
     }
     
     func statRow(title: String, value: String) -> some View {

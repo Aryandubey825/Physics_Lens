@@ -3,9 +3,6 @@ import SwiftUI
 @available(iOS 26.0, *)
 struct PendulumGame: View {
     
-    @StateObject private var aiManager = AIFeedbackManager()
-    @State private var showAISheet = false
-    
     @StateObject private var voiceManager = VoiceAssistantManager()
     
     @State private var showBoard = false
@@ -186,16 +183,13 @@ struct PendulumGame: View {
         .onAppear {
             startPendulum()
         }
-        .sheet(isPresented: $showAISheet) {
-            aiSheetView
-        }
     }
     
     
     var hintOverlay: some View {
         Group {
             if showHint {
-                Color.black.opacity(0.5)
+                Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .onTapGesture {
                         showHint = false
@@ -204,13 +198,13 @@ struct PendulumGame: View {
                 let lengthMeters = lengthPixels / pixelToMeter
                 let correctT = realTimePeriod()
                 
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 10) {
                         Image(systemName: "lightbulb.fill")
                             .foregroundColor(.yellow)
-                            .font(.title2)
+                            .font(.title3)
                         Text("Solver Hint")
-                            .font(.headline)
+                            .font(.title3.bold())
                             .foregroundColor(.primary)
                         Spacer()
                         Button {
@@ -225,61 +219,79 @@ struct PendulumGame: View {
                     
                     Divider()
                     
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("🎯 Solve Guide:")
-                            .font(.subheadline.bold())
-                            .foregroundColor(.blue)
-                        
-                        Text("Time Period (T) equation:")
-                            .font(.footnote)
-                        Text("T = 2π × √(L / g)")
-                            .font(.system(.body, design: .monospaced))
-                            .bold()
-                            .padding(6)
-                            .background(Color.blue.opacity(0.1))
-                            .cornerRadius(6)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Current Values:")
-                                .font(.caption.bold())
-                            Text("• Length (L) = \(String(format: "%.2f", lengthMeters)) m")
-                            Text("• Gravity (g) = \(gravity) m/s²")
-                        }
-                        .font(.footnote)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Step-by-Step for Current Values:")
-                                .font(.caption.bold())
-                            Text("T = 2 × 3.1416 × √(\(String(format: "%.2f", lengthMeters)) / \(gravity))\nT ≈ \(String(format: "%.2f", correctT)) seconds")
-                                .font(.system(.footnote, design: .monospaced))
-                                .foregroundColor(.secondary)
-                                .padding(6)
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("🎯 Solve Guide:")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                            
+                            Text("Time Period (T) equation:")
+                                .font(.body)
+                                .foregroundColor(.primary)
+                            
+                            Text("T = 2π × √(L / g)")
+                                .font(.system(.body, design: .monospaced))
+                                .bold()
+                                .padding(12)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(6)
+                                .background(Color.blue.opacity(0.08))
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                )
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Current Values:")
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(.primary)
+                                Text("• Length (L) = \(String(format: "%.2f", lengthMeters)) m")
+                                Text("• Gravity (g) = \(gravity) m/s²")
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.primary.opacity(0.85))
+                            
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Step-by-Step for Current Values:")
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(.primary)
+                                Text("T = 2 × 3.1416 × √(\(String(format: "%.2f", lengthMeters)) / \(gravity))\nT ≈ \(String(format: "%.2f", correctT)) seconds")
+                                    .font(.system(.subheadline, design: .monospaced))
+                                    .foregroundColor(.primary.opacity(0.85))
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color(.secondarySystemGroupedBackground))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                    )
+                            }
                         }
                     }
+                    .frame(maxHeight: 380)
                     
                     Divider()
                     
-                    Button("Got it!") {
+                    Button {
                         showHint = false
+                    } label: {
+                        Text("Got it!")
+                            .font(.headline.bold())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(14)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.plain)
                 }
-                .padding(20)
-                .frame(maxWidth: 340)
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(.ultraThinMaterial)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24)
-                        .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                )
-                .shadow(radius: 10)
-                .padding()
+                .padding(24)
+                .frame(maxWidth: 420)
+                .background(Color(.systemBackground))
+                .cornerRadius(24)
+                .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: 10)
+                .padding(.horizontal, 24)
             }
         }
     }
@@ -288,95 +300,80 @@ struct PendulumGame: View {
     var popupOverlay: some View {
         ZStack {
             if showPopup {
-                
-                Color.black.opacity(0.3)
+                Color.black.opacity(0.4)
                     .ignoresSafeArea()
+                    .transition(.opacity)
                 
                 VStack(spacing: 20) {
+                    // Status Badge Icon
+                    let statusColor: Color = isCorrect ? .green : .red
+                    let statusIcon: String = isCorrect ? "checkmark.seal.fill" : "xmark.seal.fill"
+                    let statusTitle = isCorrect ? "Correct!" : "Incorrect"
                     
-                    Text(isCorrect ? "🎯 Correct!" : "❌ Incorrect")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(
-                            isCorrect ?
-                            LinearGradient(colors: [.green, .mint],
-                                           startPoint: .leading,
-                                           endPoint: .trailing)
-                            :
-                            LinearGradient(colors: [.red, .orange],
-                                           startPoint: .leading,
-                                           endPoint: .trailing)
-                        )
+                    VStack(spacing: 8) {
+                        Image(systemName: statusIcon)
+                            .font(.system(size: 48))
+                            .foregroundColor(statusColor)
+                            .shadow(color: statusColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        
+                        Text(statusTitle)
+                            .font(.system(.title2, design: .rounded).bold())
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.top, 8)
                     
-                    Divider()
-                    
+                    // Stats Inset Box
                     VStack(spacing: 12) {
-                        statRow(title: "Length",
-                                value: "\(String(format: "%.2f", lengthPixels/pixelToMeter)) m")
-                        
-                        statRow(title: "Gravity",
-                                value: "\(gravity)")
-                        
-                        statRow(title: "Correct T",
-                                value: "\(String(format: "%.2f", realTimePeriod())) s")
+                        statRow(title: "Length", value: "\(String(format: "%.2f", lengthPixels/pixelToMeter)) m")
+                        statRow(title: "Gravity", value: "\(gravity)")
+                        statRow(title: "Correct T", value: "\(String(format: "%.2f", realTimePeriod())) s")
                     }
+                    .padding(14)
+                    .background(Color.primary.opacity(0.04))
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.primary.opacity(0.06), lineWidth: 1)
+                    )
                     
-                    Divider()
-                    
-                    Button {
-                        generateAIFeedback()
-                    } label: {
-                        HStack {
-                            Image(systemName: "sparkles")
-                            Text("Get AI Insight")
+                    // Actions Stack
+                    VStack(spacing: 10) {
+                        Button {
+                            nextRound()
+                        } label: {
+                            Text("Next Round")
+                                .font(.headline.bold())
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(Color.primary.opacity(0.06))
+                                .cornerRadius(14)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                                )
                         }
-                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.borderedProminent)
-                    
-                    Button {
-                        nextRound()
-                    } label: {
-                        Text("Next Round")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
                 }
                 .padding(24)
-                .frame(maxWidth: 360)
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(.ultraThinMaterial)
+                .frame(maxWidth: 340)
+                .background(.ultraThinMaterial)
+                .cornerRadius(28)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28)
+                        .stroke(
+                            LinearGradient(
+                                colors: [.white.opacity(0.55), .white.opacity(0.15)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
                 )
-                .shadow(radius: 20)
+                .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
+                .transition(.scale.combined(with: .opacity))
             }
-        }
-    }
-    
-    
-    var aiSheetView: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                
-                Text("AI Performance Review")
-                    .font(.title2.bold())
-                
-                if aiManager.isLoading {
-                    ProgressView("Analyzing...")
-                        .padding(.top, 30)
-                } else {
-                    
-                    AIFeedbackView(feedback: aiManager.feedbackText)
-                        .frame(maxWidth: .infinity)
-                }
-                
-                Button("Close") {
-                    showAISheet = false
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .padding(.top, 10)
-            }
-            .padding()
         }
     }
   
@@ -418,24 +415,6 @@ struct PendulumGame: View {
         }
         userGuess = ""
         showPopup = false
-    }
-    
-    func generateAIFeedback() {
-        let result = GameResult(
-            topic: "Simple Pendulum",
-            userInput: """
-            Length: \(String(format: "%.2f", lengthPixels/pixelToMeter)) m
-            Gravity: \(gravity)
-            """,
-            correctConcept: "T = 2π√(L/g). Time period depends only on length and gravity.",
-            userOutcome: isCorrect ? "Correct Answer" : "Incorrect Answer",
-            score: score
-        )
-        
-        Task {
-            await aiManager.analyze(result: result)
-            showAISheet = true
-        }
     }
     
     func statRow(title: String, value: String) -> some View {

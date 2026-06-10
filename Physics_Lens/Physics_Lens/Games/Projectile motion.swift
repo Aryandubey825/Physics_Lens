@@ -1,5 +1,4 @@
 import SwiftUI
-import FoundationModels
 import AVFoundation
 
 @available(iOS 26.0, *)
@@ -32,9 +31,6 @@ struct projectileGame: View {
     
     @State private var lockAngle = false
     @State private var lockSpeed = false
-    
-    @StateObject private var aiManager = AIFeedbackManager()
-    @State private var showAISheet = false
     
     let visualScale: Double = 3
     
@@ -256,13 +252,19 @@ struct projectileGame: View {
     var hintOverlay: some View {
         Group {
             if showHint {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(spacing: 8) {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showHint = false
+                    }
+                
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 10) {
                         Image(systemName: "lightbulb.fill")
                             .foregroundColor(.yellow)
-                            .font(.title2)
+                            .font(.title3)
                         Text("Solver Hint & Gravity Info")
-                            .font(.headline)
+                            .font(.title3.bold())
                             .foregroundColor(.primary)
                         Spacer()
                         Button {
@@ -277,204 +279,201 @@ struct projectileGame: View {
                     
                     Divider()
                     
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("🌌 Planetary Gravity Reference (g):")
-                            .font(.subheadline.bold())
-                            .foregroundColor(.blue)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("• 🌍 Earth Gravity: 9.8 m/s²")
-                            Text("• 🌙 Moon Gravity: 1.6 m/s²")
-                            Text("• 🔴 Mars Gravity: 3.7 m/s²")
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("🌌 Planetary Gravity Reference (g):")
+                                    .font(.headline)
+                                    .foregroundColor(.blue)
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("• 🌍 Earth Gravity: 9.8 m/s²")
+                                    Text("• 🌙 Moon Gravity: 1.6 m/s²")
+                                    Text("• 🔴 Mars Gravity: 3.7 m/s²")
+                                }
+                                .font(.body)
+                                .foregroundColor(.primary)
+                            }
+                            
+                            Divider()
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("🎯 Solve Guide:")
+                                    .font(.headline)
+                                    .foregroundColor(.blue)
+                                
+                                Text("Target Distance: \(String(format: "%.1f", targetDistance)) m")
+                                    .font(.body)
+                                Text("Current Gravity (g): \(selectedGravity) m/s²")
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                                    .padding(.bottom, 4)
+                                
+                                if lockAngle {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("Angle (θ) is locked at \(Int(angle))°.")
+                                            .font(.body.bold())
+                                            .foregroundColor(.red)
+                                        Text("Find launch speed (u) using:")
+                                            .font(.subheadline)
+                                        Text("u = √((Target Distance × g) / sin(2θ))")
+                                            .font(.system(.body, design: .monospaced))
+                                            .bold()
+                                            .padding(12)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.blue.opacity(0.08))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                            )
+                                    }
+                                } else if lockSpeed {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("Speed (u) is locked at \(Int(speed)) m/s.")
+                                            .font(.body.bold())
+                                            .foregroundColor(.red)
+                                        Text("Find launch angle (θ) using:")
+                                            .font(.subheadline)
+                                        Text("sin(2θ) = (Target Distance × g) / u²")
+                                            .font(.system(.body, design: .monospaced))
+                                            .bold()
+                                            .padding(12)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.blue.opacity(0.08))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                            )
+                                    }
+                                } else {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("Angle and Speed are both adjustable.")
+                                            .font(.body)
+                                        Text("Tip: Use 45° angle for maximum range!")
+                                            .font(.body.bold())
+                                            .foregroundColor(.green)
+                                        Text("u = √(Target Distance × g)")
+                                            .font(.system(.body, design: .monospaced))
+                                            .bold()
+                                            .padding(12)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.blue.opacity(0.08))
+                                            .cornerRadius(10)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                            )
+                                    }
+                                }
+                            }
                         }
-                        .font(.footnote)
-                        .foregroundColor(.primary)
                     }
+                    .frame(maxHeight: 380)
                     
                     Divider()
                     
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("🎯 Solve Guide:")
-                            .font(.subheadline.bold())
-                            .foregroundColor(.blue)
-                        
-                        Text("Target Distance: \(String(format: "%.1f", targetDistance)) m")
-                            .font(.footnote)
-                        Text("Current Gravity (g): \(selectedGravity) m/s²")
-                            .font(.footnote)
-                        
-                        if lockAngle {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Angle (θ) is locked at \(Int(angle))°.")
-                                    .font(.footnote.bold())
-                                    .foregroundColor(.red)
-                                Text("Find launch speed (u) using:")
-                                    .font(.caption)
-                                Text("u = √((Target Distance × g) / sin(2θ))")
-                                    .font(.system(.caption, design: .monospaced))
-                                    .padding(6)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(6)
-                            }
-                        } else if lockSpeed {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Speed (u) is locked at \(Int(speed)) m/s.")
-                                    .font(.footnote.bold())
-                                    .foregroundColor(.red)
-                                Text("Find launch angle (θ) using:")
-                                    .font(.caption)
-                                Text("sin(2θ) = (Target Distance × g) / u²")
-                                    .font(.system(.caption, design: .monospaced))
-                                    .padding(6)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(6)
-                            }
-                        } else {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Angle and Speed are both adjustable.")
-                                    .font(.footnote)
-                                Text("Tip: Use 45° angle for maximum range!")
-                                    .font(.caption.bold())
-                                Text("u = √(Target Distance × g)")
-                                    .font(.system(.caption, design: .monospaced))
-                                    .padding(6)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(6)
-                            }
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    Button("Close") {
+                    Button {
                         showHint = false
+                    } label: {
+                        Text("Got it!")
+                            .font(.headline.bold())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(14)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.plain)
                 }
-                .padding()
-                .frame(maxWidth: 320)
-                .background(.ultraThinMaterial)
-                .cornerRadius(18)
-                .shadow(radius: 10)
-                .padding()
+                .padding(24)
+                .frame(maxWidth: 420)
+                .background(Color(.systemBackground))
+                .cornerRadius(24)
+                .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: 10)
+                .padding(.horizontal, 24)
             }
         }
     }
     
-    
     var popupOverlay: some View {
         ZStack {
             if showPopup {
-                
-                // Background Dim Layer
-                Color.black.opacity(0.5)
+                Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .transition(.opacity)
                 
                 VStack(spacing: 20) {
+                    // Status Badge Icon
+                    let statusColor: Color = hitSuccess ? .green : .red
+                    let statusIcon: String = hitSuccess ? "checkmark.seal.fill" : "xmark.seal.fill"
+                    let statusTitle = hitSuccess ? "Perfect Hit!" : "Target Missed"
                     
-                    // Result Title
-                    Text(hitSuccess ? "🎯 Perfect Hit!" : "💥 Target Missed")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(
-                            hitSuccess ?
-                            LinearGradient(colors: [.green, .mint],
-                                           startPoint: .leading,
-                                           endPoint: .trailing)
-                            :
-                            LinearGradient(colors: [.red, .orange],
-                                           startPoint: .leading,
-                                           endPoint: .trailing)
-                        )
+                    VStack(spacing: 8) {
+                        Image(systemName: statusIcon)
+                            .font(.system(size: 48))
+                            .foregroundColor(statusColor)
+                            .shadow(color: statusColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        
+                        Text(statusTitle)
+                            .font(.system(.title2, design: .rounded).bold())
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.top, 8)
                     
-                    Divider()
-                    
-                    // Stats Section
+                    // Stats Inset Box
                     VStack(spacing: 12) {
-                        statRow(title: "Range",
-                                value: "\(String(format: "%.2f", calculatedRange())) m")
-                        
-                        statRow(title: "Max Height",
-                                value: "\(String(format: "%.2f", maxHeight())) m")
-                        
-                        statRow(title: "Flight Time",
-                                value: "\(String(format: "%.2f", flightTime())) s")
+                        statRow(title: "Range", value: "\(String(format: "%.2f", calculatedRange())) m")
+                        statRow(title: "Max Height", value: "\(String(format: "%.2f", maxHeight())) m")
+                        statRow(title: "Flight Time", value: "\(String(format: "%.2f", flightTime())) s")
                     }
+                    .padding(14)
+                    .background(Color.primary.opacity(0.04))
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.primary.opacity(0.06), lineWidth: 1)
+                    )
                     
-                    Divider()
-                    
-                    // AI Insight Button
-                    Button {
-                        generateAIFeedback()
-                        showAISheet = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "sparkles")
-                            Text("Get AI Insight")
-                                .fontWeight(.semibold)
+                    // Actions Stack
+                    VStack(spacing: 10) {
+                        Button {
+                            nextRound()
+                        } label: {
+                            Text("Next Round")
+                                .font(.headline.bold())
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(Color.primary.opacity(0.06))
+                                .cornerRadius(14)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                                )
                         }
-                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    
-                    // Next Button
-                    Button {
-                        nextRound()
-                    } label: {
-                        Text("Next Round")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
                 }
                 .padding(24)
-                .frame(maxWidth: 360)
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(.ultraThinMaterial)
-                )
+                .frame(maxWidth: 340)
+                .background(.ultraThinMaterial)
+                .cornerRadius(28)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 24)
-                        .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 28)
+                        .stroke(
+                            LinearGradient(
+                                colors: [.white.opacity(0.55), .white.opacity(0.15)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
                 )
-                .shadow(color: .black.opacity(0.2),
-                        radius: 20,
-                        x: 0,
-                        y: 10)
-                .scaleEffect(showPopup ? 1 : 0.8)
-                .animation(.spring(response: 0.4,
-                                   dampingFraction: 0.75),
-                           value: showPopup)
+                .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
+                .transition(.scale.combined(with: .opacity))
             }
-        }
-        .sheet(isPresented: $showAISheet) {
-            NavigationStack {
-                VStack(spacing: 20) {
-                    
-                    Text("AI Performance Review")
-                        .font(.title2.bold())
-                    
-                    if aiManager.isLoading {
-                        ProgressView("Analyzing...")
-                            .padding()
-                    } else {
-                        
-                        AIFeedbackView(feedback: aiManager.feedbackText)
-                            .frame(maxHeight: .infinity)
-                    }
-                    
-                    Button("Close") {
-                        showAISheet = false
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                }
-                .padding()
-            }
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
         }
     }
     
@@ -570,30 +569,6 @@ struct projectileGame: View {
     func flightTime() -> Double {
         let angleRad = angle * .pi / 180
         return (2 * speed * sin(angleRad)) / selectedGravity
-    }
-    func generateAIFeedback() {
-        
-        let result = GameResult(
-            topic: "Projectile Motion",
-            userInput: """
-            Angle: \(Int(angle))°
-            Speed: \(Int(speed)) m/s
-            Gravity: \(selectedGravity)
-            Target Range: \(String(format: "%.1f", targetDistance)) m
-            """,
-            correctConcept: """
-            Range = (u² sin(2θ)) / g
-            Time of Flight = (2u sinθ) / g
-            Maximum Height = (u² sin²θ) / (2g)
-            """,
-            userOutcome: hitSuccess ? "Hit the target" : "Missed the target",
-            score: score
-        )
-        
-        Task {
-            await aiManager.analyze(result: result)
-            showAISheet = true
-        }
     }
     func statRow(title: String, value: String) -> some View {
         HStack {

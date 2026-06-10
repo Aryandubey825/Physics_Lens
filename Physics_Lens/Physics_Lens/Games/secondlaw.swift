@@ -1,5 +1,4 @@
 import SwiftUI
-import FoundationModels
 import AVFoundation
 
 @available(iOS 26.0, *)
@@ -10,11 +9,9 @@ struct PhysicsRacePro: View {
     }
     
     @StateObject private var voiceManager = VoiceAssistantManager()
-    @StateObject private var aiManager = AIFeedbackManager()
     
     @State private var showBoard = false
     @State private var showPopup = false
-    @State private var showAISheet = false
     
     @State private var questionType: QuestionType = .force
     @State private var mass: Double = 5
@@ -103,32 +100,6 @@ struct PhysicsRacePro: View {
         )
         .sheet(isPresented: $showBoard) {
             RoughBoardView()
-        }
-        .sheet(isPresented: $showAISheet) {
-            NavigationStack {
-                VStack(spacing: 20) {
-                    Text("AI Performance Review")
-                        .font(.title2.bold())
-                    
-                    if aiManager.isLoading {
-                        ProgressView("Analyzing...")
-                            .padding(.top, 30)
-                    } else {
-                        AIFeedbackView(feedback: aiManager.feedbackText)
-                            .frame(maxWidth: .infinity)
-                    }
-                    
-                    Button("Close") {
-                        showAISheet = false
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .padding(.top, 10)
-                }
-                .padding()
-            }
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
         }
         .onAppear {
             startGame()
@@ -231,7 +202,7 @@ struct PhysicsRacePro: View {
             HStack {
                 Text("TARGET VARIABLE")
                     .font(.system(.caption2, design: .monospaced))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 Text(title())
                     .font(.system(.footnote, design: .rounded).bold())
@@ -393,78 +364,96 @@ struct PhysicsRacePro: View {
     var popupOverlay: some View {
         ZStack {
             if showPopup {
-                Color.black.opacity(0.45)
+                Color.black.opacity(0.4)
                     .ignoresSafeArea()
+                    .transition(.opacity)
                 
-                VStack(spacing: 24) {
-                    // Result title with custom glow
-                    Text(resultText)
-                        .font(.system(.title2, design: .rounded).bold())
-                        .foregroundColor(resultText.contains("Wrong") ? .red : (resultText.contains("Perfect") ? .green : .orange))
-                        .shadow(color: (resultText.contains("Wrong") ? Color.red : (resultText.contains("Perfect") ? Color.green : Color.orange)).opacity(0.3), radius: 5)
+                VStack(spacing: 20) {
+                    // Status Badge Icon
+                    let isPerfect = resultText.contains("Perfect")
+                    let isClose = resultText.contains("Close")
+                    let isTimeUp = resultText.contains("Time")
+                    let isWrong = resultText.contains("Wrong")
                     
-                    VStack(spacing: 12) {
-                        Text("Concept Solution:")
-                            .font(.caption.bold())
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                    let statusColor: Color = isPerfect ? .green : (isClose ? .orange : (isWrong ? .red : (isTimeUp ? .orange : .blue)))
+                    let statusIcon: String = isPerfect ? "checkmark.seal.fill" : (isClose ? "exclamationmark.circle.fill" : (isWrong ? "xmark.seal.fill" : (isTimeUp ? "timer" : "info.circle.fill")))
+                    
+                    VStack(spacing: 8) {
+                        Image(systemName: statusIcon)
+                            .font(.system(size: 48))
+                            .foregroundColor(statusColor)
+                            .shadow(color: statusColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        
+                        Text(resultText)
+                            .font(.system(.title2, design: .rounded).bold())
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.top, 8)
+                    
+                    // Concept Solution Block
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "doc.text.magnifyingglass")
+                                .font(.caption.bold())
+                                .foregroundColor(.secondary)
+                            Text("Concept Solution:")
+                                .font(.caption.bold())
+                                .foregroundColor(.secondary)
+                        }
                         
                         Text(solutionText)
-                            .font(.system(.body, design: .monospaced).bold())
+                            .font(.system(.subheadline, design: .monospaced).bold())
                             .foregroundColor(.primary)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.white.opacity(0.06))
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.primary.opacity(0.04))
                             .cornerRadius(12)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                                    .stroke(Color.primary.opacity(0.06), lineWidth: 1)
                             )
                     }
+                    .padding(.horizontal, 4)
                     
-                    VStack(spacing: 12) {
-                        Button {
-                            generateAIFeedback()
-                        } label: {
-                            HStack {
-                                Image(systemName: "sparkles")
-                                Text("Get AI Performance Insight")
-                            }
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(LinearGradient(colors: [.indigo, .purple], startPoint: .leading, endPoint: .trailing))
-                            .cornerRadius(12)
-                        }
-                        
+                    // Actions Stack
+                    VStack(spacing: 10) {
                         Button {
                             showPopup = false
                             nextRound()
                         } label: {
                             Text("Next Round")
-                                .font(.headline)
+                                .font(.headline.bold())
                                 .foregroundColor(.primary)
                                 .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.white.opacity(0.1))
-                                .cornerRadius(12)
+                                .padding(.vertical, 14)
+                                .background(Color.primary.opacity(0.06))
+                                .cornerRadius(14)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
                                 )
                         }
+                        .buttonStyle(.plain)
                     }
                 }
-                .padding(25)
-                .background(.ultraThinMaterial)
-                .cornerRadius(24)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                )
+                .padding(24)
                 .frame(maxWidth: 340)
-                .shadow(color: .black.opacity(0.35), radius: 20, x: 0, y: 10)
+                .background(.ultraThinMaterial)
+                .cornerRadius(28)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28)
+                        .stroke(
+                            LinearGradient(
+                                colors: [.white.opacity(0.55), .white.opacity(0.15)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
+                )
+                .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
+                .transition(.scale.combined(with: .opacity))
             }
         }
     }
@@ -621,181 +610,204 @@ struct PhysicsRacePro: View {
         )
     }
     
-    func generateAIFeedback() {
-        let result = GameResult(
-            topic: "Newton's Second Law & Kinematics",
-            userInput: "Mass: \(mass), Time: \(time), Distance: \(distance), Acceleration: \(acceleration)",
-            correctConcept: "F = ma, s = ½at², t = √(2s/a)",
-            userOutcome: resultText,
-            score: score
-        )
-        
-        Task {
-            await aiManager.analyze(result: result)
-            showAISheet = true
-        }
-    }
-    
     // MARK: Solver Hint Overlay
     var hintOverlay: some View {
         Group {
             if showHint {
-                ZStack {
-                    Color.black.opacity(0.5)
-                        .ignoresSafeArea()
-                        .onTapGesture {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showHint = false
+                    }
+                
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 10) {
+                        Image(systemName: "lightbulb.fill")
+                            .foregroundColor(.yellow)
+                            .font(.title3)
+                        Text("Solver Hint")
+                            .font(.title3.bold())
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Button {
                             showHint = false
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                                .font(.title3)
                         }
+                        .buttonStyle(.plain)
+                    }
                     
-                    VStack(alignment: .leading, spacing: 16) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "lightbulb.fill")
-                                .foregroundColor(.yellow)
-                                .font(.title2)
-                            Text("Solver Hint")
+                    Divider()
+                    
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("🎯 Solve Guide:")
                                 .font(.headline)
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Button {
-                                showHint = false
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.secondary)
-                                    .font(.title3)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        
-                        Divider()
-                        
-                        ScrollView(showsIndicators: false) {
-                            VStack(alignment: .leading, spacing: 14) {
-                                Text("🎯 Solve Guide:")
-                                    .font(.subheadline.bold())
-                                    .foregroundColor(.blue)
+                                .foregroundColor(.blue)
+                            
+                            switch questionType {
+                            case .force:
+                                Text("To find Force, apply Newton's Second Law of Motion: F = m × a")
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                    .lineSpacing(4)
                                 
-                                switch questionType {
-                                case .force:
-                                    Text("To find Force, apply Newton's Second Law of Motion: F = m × a")
-                                        .font(.footnote)
+                                Text("F = m × a")
+                                    .font(.system(.body, design: .monospaced))
+                                    .bold()
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.blue.opacity(0.08))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                    )
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Current Values:")
+                                        .font(.subheadline.bold())
                                         .foregroundColor(.primary)
-                                    
-                                    Text("F = m × a")
-                                        .font(.system(.body, design: .monospaced))
-                                        .bold()
-                                        .padding(6)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(6)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Current Values:")
-                                            .font(.caption.bold())
-                                        Text("• Mass (m) = \(Int(mass)) kg")
-                                        Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
-                                    }
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Step-by-Step Calculation:")
-                                            .font(.caption.bold())
-                                        Text("F = \(Int(mass)) × \(Int(acceleration)) = \(Int(mass * acceleration)) N")
-                                            .font(.system(.footnote, design: .monospaced))
-                                            .padding(6)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .background(Color.gray.opacity(0.1))
-                                            .cornerRadius(6)
-                                    }
-                                    
-                                case .distance:
-                                    Text("To find Distance (s), use the Kinematics equation of motion starting from rest (u = 0): s = ½at²")
-                                        .font(.footnote)
+                                    Text("• Mass (m) = \(Int(mass)) kg")
+                                    Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.primary.opacity(0.85))
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Step-by-Step Calculation:")
+                                        .font(.subheadline.bold())
                                         .foregroundColor(.primary)
-                                    
-                                    Text("s = ½ × a × t²")
-                                        .font(.system(.body, design: .monospaced))
-                                        .bold()
-                                        .padding(6)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(6)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Current Values:")
-                                            .font(.caption.bold())
-                                        Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
-                                        Text("• Time (t) = \(Int(time)) s")
-                                    }
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Step-by-Step Calculation:")
-                                            .font(.caption.bold())
-                                        Text("s = 0.5 × \(Int(acceleration)) × (\(Int(time))²)\ns = 0.5 × \(Int(acceleration)) × \(Int(time * time)) = \(Int(0.5 * acceleration * time * time)) m")
-                                            .font(.system(.footnote, design: .monospaced))
-                                            .padding(6)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .background(Color.gray.opacity(0.1))
-                                            .cornerRadius(6)
-                                    }
-                                    
-                                case .time:
-                                    Text("To find Time (t), rearrange the kinematics equation (s = ½at²) to solve for t:")
-                                        .font(.footnote)
+                                    Text("F = \(Int(mass)) × \(Int(acceleration)) = \(Int(mass * acceleration)) N")
+                                        .font(.system(.subheadline, design: .monospaced))
+                                        .foregroundColor(.primary.opacity(0.85))
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.secondarySystemGroupedBackground))
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                        )
+                                }
+                                
+                            case .distance:
+                                Text("To find Distance (s), use the Kinematics equation of motion starting from rest (u = 0): s = ½at²")
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                    .lineSpacing(4)
+                                
+                                Text("s = ½ × a × t²")
+                                    .font(.system(.body, design: .monospaced))
+                                    .bold()
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.blue.opacity(0.08))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                    )
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Current Values:")
+                                        .font(.subheadline.bold())
                                         .foregroundColor(.primary)
-                                    
-                                    Text("t = √(2s / a)")
-                                        .font(.system(.body, design: .monospaced))
-                                        .bold()
-                                        .padding(6)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(6)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Current Values:")
-                                            .font(.caption.bold())
-                                        Text("• Distance (s) = \(Int(distance)) m")
-                                        Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
-                                    }
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Step-by-Step Calculation:")
-                                            .font(.caption.bold())
-                                        Text("t = √((2 × \(Int(distance))) / \(Int(acceleration)))\nt = √(\(Int(2 * distance)) / \(Int(acceleration))) ≈ \(String(format: "%.2f", sqrt(2 * distance / acceleration))) seconds")
-                                            .font(.system(.footnote, design: .monospaced))
-                                            .padding(6)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .background(Color.gray.opacity(0.1))
-                                            .cornerRadius(6)
-                                    }
+                                    Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
+                                    Text("• Time (t) = \(Int(time)) s")
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.primary.opacity(0.85))
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Step-by-Step Calculation:")
+                                        .font(.subheadline.bold())
+                                        .foregroundColor(.primary)
+                                    Text("s = 0.5 × \(Int(acceleration)) × (\(Int(time))²)\ns = 0.5 × \(Int(acceleration)) × \(Int(time * time)) = \(Int(0.5 * acceleration * time * time)) m")
+                                        .font(.system(.subheadline, design: .monospaced))
+                                        .foregroundColor(.primary.opacity(0.85))
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.secondarySystemGroupedBackground))
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                        )
+                                }
+                                
+                            case .time:
+                                Text("To find Time (t), rearrange the kinematics equation (s = ½at²) to solve for t:")
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                    .lineSpacing(4)
+                                
+                                Text("t = √(2s / a)")
+                                    .font(.system(.body, design: .monospaced))
+                                    .bold()
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.blue.opacity(0.08))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.blue.opacity(0.15), lineWidth: 1)
+                                    )
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Current Values:")
+                                        .font(.subheadline.bold())
+                                        .foregroundColor(.primary)
+                                    Text("• Distance (s) = \(Int(distance)) m")
+                                    Text("• Acceleration (a) = \(Int(acceleration)) m/s²")
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.primary.opacity(0.85))
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Step-by-Step Calculation:")
+                                        .font(.subheadline.bold())
+                                        .foregroundColor(.primary)
+                                    Text("t = √((2 × \(Int(distance))) / \(Int(acceleration)))\nt = √(\(Int(2 * distance)) / \(Int(acceleration))) ≈ \(String(format: "%.2f", sqrt(2 * distance / acceleration))) seconds")
+                                        .font(.system(.subheadline, design: .monospaced))
+                                        .foregroundColor(.primary.opacity(0.85))
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.secondarySystemGroupedBackground))
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                                        )
                                 }
                             }
                         }
-                        .frame(maxHeight: 280)
-                        
-                        Divider()
-                        
-                        Button("Got it!") {
-                            showHint = false
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .frame(maxWidth: .infinity)
                     }
-                    .padding(20)
-                    .frame(maxWidth: 340)
-                    .background(
-                        RoundedRectangle(cornerRadius: 24)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .shadow(radius: 10)
-                    .padding()
+                    .frame(maxHeight: 380)
+                    
+                    Divider()
+                    
+                    Button {
+                        showHint = false
+                    } label: {
+                        Text("Got it!")
+                            .font(.headline.bold())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(14)
+                    }
+                    .buttonStyle(.plain)
                 }
+                .padding(24)
+                .frame(maxWidth: 420)
+                .background(Color(.systemBackground))
+                .cornerRadius(24)
+                .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: 10)
+                .padding(.horizontal, 24)
             }
         }
     }
@@ -816,7 +828,7 @@ struct ParameterBadge: View {
                     .foregroundColor(color)
                 Text(label)
                     .font(.system(size: 9, weight: .bold, design: .rounded))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.white.opacity(0.6))
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
             }

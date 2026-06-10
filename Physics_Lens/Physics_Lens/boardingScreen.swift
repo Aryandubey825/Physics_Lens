@@ -5,6 +5,7 @@ struct OnboardingView: View {
     
     @State private var currentPage = 0
     @State private var goToHome = false
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     
         
         init() {
@@ -37,6 +38,7 @@ struct OnboardingView: View {
                         HStack {
                             Spacer()
                             Button("Skip") {
+                                hasCompletedOnboarding = true
                                 goToHome = true
                             }
                             .font(.system(size: 16, weight: .medium))
@@ -64,6 +66,7 @@ struct OnboardingView: View {
                     
                     if currentPage == 2 {
                         Button(action: {
+                            hasCompletedOnboarding = true
                             goToHome = true
                         }) {
                             Text("Start Learning ")
