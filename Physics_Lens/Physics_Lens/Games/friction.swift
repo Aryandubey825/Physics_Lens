@@ -5,10 +5,12 @@ import AVFoundation
 struct FrictionGame: View {
     
     @StateObject private var voiceManager = VoiceAssistantManager()
+    @StateObject private var aiManager = AIFeedbackManager()
     
     @State private var showBoard = false
     @State private var showHint = false
     @State private var showPopup = false
+    @State private var showAIInsights = false
     
     @State private var selectedSurface: Surface = surfaces[0]
     @State private var questionType: QuestionType = .move
@@ -89,6 +91,10 @@ struct FrictionGame: View {
         }
         .sheet(isPresented: $showBoard) {
             RoughBoardView()
+        }
+        .sheet(isPresented: $showAIInsights) {
+            AIInsightSheetView(aiManager: aiManager, isPresented: $showAIInsights)
+                .presentationDetents([.medium, .large])
         }
         .overlay(
             ZStack {
@@ -503,6 +509,25 @@ struct FrictionGame: View {
                             .stroke(Color.primary.opacity(0.06), lineWidth: 1)
                     )
                     
+                    // AI Insights Button
+                    Button {
+                        showAIInsights = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "applelogo")
+                            Text("AI Insights")
+                                .font(.headline.bold())
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .cornerRadius(14)
+                        .shadow(color: .blue.opacity(0.3), radius: 6, x: 0, y: 3)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, 4)
+                    
                     // Actions Stack
                     VStack(spacing: 10) {
                         Button {
@@ -541,6 +566,20 @@ struct FrictionGame: View {
                 )
                 .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
                 .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .onChange(of: showPopup) { newValue in
+            if newValue {
+                let correctAns = questionType == .move ? (willMove ? "Yes" : "No") : "\(acceleration)"
+                let details = "Max Static = \(maxStaticForce)N, Applied = \(appliedForce)N"
+                Task {
+                    await aiManager.generateAppleFoundationInsight(
+                        topic: "friction",
+                        userAns: userAnswer,
+                        correctAns: correctAns,
+                        details: details
+                    )
+                }
             }
         }
     }

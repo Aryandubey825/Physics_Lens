@@ -4,6 +4,7 @@ import SwiftUI
 struct PendulumGame: View {
     
     @StateObject private var voiceManager = VoiceAssistantManager()
+    @StateObject private var aiManager = AIFeedbackManager()
     
     @State private var showBoard = false
     
@@ -21,6 +22,7 @@ struct PendulumGame: View {
     @State private var showPopup = false
     
     @State private var showHint = false
+    @State private var showAIInsights = false
     
     let amplitude: Double = 0.6
     let pixelToMeter: Double = 150
@@ -173,6 +175,10 @@ struct PendulumGame: View {
         }
         .sheet(isPresented: $showBoard) {
             RoughBoardView()
+        }
+        .sheet(isPresented: $showAIInsights) {
+            AIInsightSheetView(aiManager: aiManager, isPresented: $showAIInsights)
+                .presentationDetents([.medium, .large])
         }
         .overlay(
             ZStack {
@@ -336,6 +342,25 @@ struct PendulumGame: View {
                             .stroke(Color.primary.opacity(0.06), lineWidth: 1)
                     )
                     
+                    // AI Insights Button
+                    Button {
+                        showAIInsights = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "applelogo")
+                            Text("AI Insights")
+                                .font(.headline.bold())
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .cornerRadius(14)
+                        .shadow(color: .blue.opacity(0.3), radius: 6, x: 0, y: 3)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, 4)
+                    
                     // Actions Stack
                     VStack(spacing: 10) {
                         Button {
@@ -373,6 +398,21 @@ struct PendulumGame: View {
                 )
                 .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
                 .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .onChange(of: showPopup) { newValue in
+            if newValue {
+                let L = String(format: "%.2f", lengthPixels/pixelToMeter)
+                let T = String(format: "%.2f", 2 * .pi * sqrt((lengthPixels/pixelToMeter) / gravity))
+                let details = "L=\(L)m, g=\(gravity), T=\(T)s"
+                Task {
+                    await aiManager.generateAppleFoundationInsight(
+                        topic: "pendulum",
+                        userAns: userGuess,
+                        correctAns: T,
+                        details: details
+                    )
+                }
             }
         }
     }

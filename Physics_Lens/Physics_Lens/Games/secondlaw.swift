@@ -9,9 +9,11 @@ struct PhysicsRacePro: View {
     }
     
     @StateObject private var voiceManager = VoiceAssistantManager()
+    @StateObject private var aiManager = AIFeedbackManager()
     
     @State private var showBoard = false
     @State private var showPopup = false
+    @State private var showAIInsights = false
     
     @State private var questionType: QuestionType = .force
     @State private var mass: Double = 5
@@ -100,6 +102,10 @@ struct PhysicsRacePro: View {
         )
         .sheet(isPresented: $showBoard) {
             RoughBoardView()
+        }
+        .sheet(isPresented: $showAIInsights) {
+            AIInsightSheetView(aiManager: aiManager, isPresented: $showAIInsights)
+                .presentationDetents([.medium, .large])
         }
         .onAppear {
             startGame()
@@ -416,6 +422,25 @@ struct PhysicsRacePro: View {
                     }
                     .padding(.horizontal, 4)
                     
+                    // AI Insights Button
+                    Button {
+                        showAIInsights = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "applelogo")
+                            Text("AI Insights")
+                                .font(.headline.bold())
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .cornerRadius(14)
+                        .shadow(color: .blue.opacity(0.3), radius: 6, x: 0, y: 3)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, 4)
+                    
                     // Actions Stack
                     VStack(spacing: 10) {
                         Button {
@@ -454,6 +479,20 @@ struct PhysicsRacePro: View {
                 )
                 .shadow(color: .black.opacity(0.25), radius: 25, x: 0, y: 15)
                 .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .onChange(of: showPopup) { newValue in
+            if newValue {
+                let correctVal = String(format: "%.2f", correctAnswer())
+                let details = "m=\(mass)kg, t=\(time)s, a=\(acceleration)m/s², d=\(distance)m"
+                Task {
+                    await aiManager.generateAppleFoundationInsight(
+                        topic: "newton's second law",
+                        userAns: userAnswer,
+                        correctAns: correctVal,
+                        details: details
+                    )
+                }
             }
         }
     }
